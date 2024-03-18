@@ -1,4 +1,5 @@
 using Final_Project.Models;
+using Final_Project.Repository.OrderRepo;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -11,7 +12,10 @@ namespace Final_Project
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services.AddDbContext<ProjContext>(p => p.UseSqlServer(
+            builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+
+
+            builder.Services.AddDbContext<ProjContext>(p => p.UseLazyLoadingProxies().UseSqlServer(
                         builder.Configuration.GetConnectionString("Project")));
             // Add services to the container.
             builder.Services.AddControllersWithViews();
