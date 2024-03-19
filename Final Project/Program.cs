@@ -19,7 +19,7 @@ namespace Final_Project
                         builder.Configuration.GetConnectionString("Project")));
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-            builder.Services.AddIdentity<Account, IdentityRole>(options =>
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
             {
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireDigit = false;

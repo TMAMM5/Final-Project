@@ -1,10 +1,11 @@
 ﻿#nullable enable 
 using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Final_Project.Models
 {
-    public class Account : IdentityUser
+    public class ApplicationUser : IdentityUser
     {
         //[DataType(DataType.EmailAddress)]
 
@@ -25,6 +26,12 @@ namespace Final_Project.Models
         public DateTime creationDate { get; set; } = DateTime.Now;
         [Required]
         public bool IsDeleted { get; set; } = false;
+
+        [ForeignKey("Branch")]
+        [Display(Name = "Branch")]
+        [Required(ErrorMessage = "Please select branch")]
+        public int BranchId { get; set; }
+        public virtual Branch? Branch { get; set; }
 
     }
 }

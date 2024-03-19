@@ -4,9 +4,13 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Final_Project.Models
 {
-    public class Representative:Account
+    public class Representative
     {
         //public int Id { get; set; }
+        [ForeignKey("AppUser")]
+        public string AppUserId { get; set; }
+        public virtual ApplicationUser AppUser { get; set; }
+
 
         [Display(Name = "Company Percentage Of Order")]
         [Column(TypeName = "decimal(18, 2)")]
@@ -27,6 +31,6 @@ namespace Final_Project.Models
         public int? DiscountTypeId { get; set; }
         public virtual DiscountType? DiscountType { get; set; }
 
-        public string Role { get; set; } = "Representative";
+        public bool IsDeleted { get; set; }
     }
 }
