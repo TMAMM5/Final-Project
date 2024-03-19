@@ -19,12 +19,13 @@ namespace Final_Project.Repository.DiscountTypeRepo
         {
             DiscountType discount = GetById(id);
             _context.DiscountTypes.Remove(discount);
+            Save();
 
         }
 
-        public void Edit(DiscountType discount)
+        public void Update(DiscountType discount)
         {
-            _context.Entry(discount).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+            _context.DiscountTypes.Update(discount);
         }
 
         public List<DiscountType> GetAll()
@@ -34,7 +35,7 @@ namespace Final_Project.Repository.DiscountTypeRepo
 
         public DiscountType GetById(int id)
         {
-            return _context.DiscountTypes.Find(id);
+            return _context.DiscountTypes.FirstOrDefault(dt=>dt.Id == id);
         }
 
         public void Save()

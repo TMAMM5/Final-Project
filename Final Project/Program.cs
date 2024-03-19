@@ -1,5 +1,17 @@
 using Final_Project.Models;
+using Final_Project.Repository.BranchRepo;
+using Final_Project.Repository.CityRepo;
+using Final_Project.Repository.DeliverTypeRepo;
+using Final_Project.Repository.DiscountTypeRepo;
+using Final_Project.Repository.GovernorateRepo;
 using Final_Project.Repository.OrderRepo;
+using Final_Project.Repository.OrderStateRepo;
+using Final_Project.Repository.OrderTypeRepo;
+using Final_Project.Repository.PaymentMethodRepo;
+using Final_Project.Repository.ProductRepo;
+using Final_Project.Repository.RepresintativeRepo;
+using Final_Project.Repository.TraderRepo;
+using Final_Project.Repository.WeightSettingRepo;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -13,7 +25,18 @@ namespace Final_Project
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddScoped<IOrderRepository, OrderRepository>();
-
+            builder.Services.AddScoped<IBranchRepository, BranchRepository>();
+            builder.Services.AddScoped<ICityRepository, CityRepository>();
+            builder.Services.AddScoped<IDeliverTypeRepository, DeliverTypeRepository>();
+            builder.Services.AddScoped<IDiscountTypeRepository, DiscountTypeRepository>();
+            builder.Services.AddScoped<IGovernorateRepository, GovernorateRepository>();
+            builder.Services.AddScoped<IOrderStateRepository, OrderStateRepository>();
+            builder.Services.AddScoped<IOrderTypeRepository, OrderTypeRepository>();
+            builder.Services.AddScoped<IPaymentMethodRepository, PaymentMethodRepository>();
+            builder.Services.AddScoped<IProductRepositoy,ProductRepositoy>();
+            builder.Services.AddScoped<IRepresintativeRepository, RepresintativeRepository>();
+            builder.Services.AddScoped<ITraderRepository, TraderRepository>();
+            builder.Services.AddScoped<IWeightSettingRepo, WeightSettingRepo>();
 
             builder.Services.AddDbContext<ProjContext>(p => p.UseLazyLoadingProxies().UseSqlServer(
                         builder.Configuration.GetConnectionString("Project")));
