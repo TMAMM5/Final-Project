@@ -6,7 +6,7 @@ namespace Final_Project.Repository.DiscountTypeRepo
     {
         void Add(DiscountType discount);
         void Delete(int id);
-        void Edit(DiscountType discount);
+        void Update(DiscountType discount);
         List<DiscountType> GetAll();
         DiscountType GetById(int id);
         void Save();

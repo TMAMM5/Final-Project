@@ -6,7 +6,7 @@ namespace Final_Project.Repository.GovernorateRepo
     {
         void Add(Governorate government);
         void Delete(int id);
-        void Edit(Governorate governorate);
+        void Update(Governorate governorate);
         List<Governorate> GetAll();
         Governorate GetById(int id);
         void Save();

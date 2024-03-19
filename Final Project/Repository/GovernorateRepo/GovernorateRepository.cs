@@ -18,12 +18,12 @@ namespace Final_Project.Repository.GovernorateRepo
         {
             Governorate governorate = GetById(id);
             _context.governorates.Remove(governorate);
-
+            Save();
         }
 
-        public void Edit(Governorate governorate)
+      public void Update(Governorate governorate)
         {
-            _context.Entry(governorate).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+            _context.governorates.Update(governorate);
         }
 
         public List<Governorate> GetAll()
@@ -33,7 +33,7 @@ namespace Final_Project.Repository.GovernorateRepo
 
         public Governorate GetById(int id)
         {
-            return _context.governorates.Find(id);
+            return _context.governorates.FirstOrDefault(g=>g.Id==id);
         }
 
         public void Save()

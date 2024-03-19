@@ -16,7 +16,7 @@ namespace Final_Project.Repository.WeightSettingRepo
 
         public WeightSetting GetById(int id)
         {
-            return _context.WeightSetting.Find(id);
+            return _context.WeightSetting.FirstOrDefault(ws=>ws.Id==id);
         }
 
         public void Update(WeightSetting weightSetting)
