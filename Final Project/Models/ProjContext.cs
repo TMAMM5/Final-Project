@@ -5,7 +5,7 @@ using System.Reflection.Emit;
 
 namespace Final_Project.Models
 {
-    public class ProjContext : IdentityDbContext<Account>
+    public class ProjContext : IdentityDbContext<ApplicationUser>
     {
         public ProjContext() 
         {
@@ -17,39 +17,53 @@ namespace Final_Project.Models
 
         }
 
-        public virtual DbSet<Employee> Employees { get; set; }
-        public virtual DbSet<Representative> Representatives { get; set; }
         public virtual DbSet<Branch> Branches { get; set; }
+        public virtual DbSet<Trader> Traders { get; set; }
+        
+        public virtual DbSet<Representative> Representatives { get; set; }
 
         public virtual DbSet<DeliverType> DeliverTypes { get; set; }
         public virtual DbSet<Governorate> governorates { get; set; }
         public virtual DbSet<City> Cities { get; set; }
         public virtual DbSet<DiscountType> DiscountTypes { get; set; }
-        public virtual DbSet<Trader> Traders { get; set; }
-
+        public virtual DbSet<Order> Orders { get; set; }
         public virtual DbSet<WeightSetting> WeightSetting { get; set; }
         public virtual DbSet<OrderState> OrderStates { get; set; }
         public virtual DbSet<OrderType> OrderTypes { get; set; }
         public virtual DbSet<PaymentMethod> PaymentMethods { get; set; }
         public virtual DbSet<Product> Products { get; set; }
-
-        public virtual DbSet<Order> Orders { get; set; }
-
         public virtual DbSet<TraderSpecialPriceForCities> TraderSpecialPriceForCities { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)
-        {
+        { 
+            var secutitySchema = "security";
             base.OnModelCreating(builder);
-            builder.Entity<Employee>().Property(m => m.creationDate).HasDefaultValueSql("GetDate()");
+            builder.Entity<Representative>().HasKey("AppUserId");
+            builder.Entity<Trader>().HasKey("AppUserId");
+           
+            builder.Entity<ApplicationUser>().ToTable("Users", secutitySchema);
+            builder.Entity<IdentityRole>().ToTable("Roles", secutitySchema);
+            builder.Entity<IdentityUserRole<string>>().ToTable("UserRoles", secutitySchema);
+            builder.Entity<IdentityRoleClaim<string>>().ToTable("RoleClaims", secutitySchema);
+            builder.Entity<IdentityUserClaim<string>>().ToTable("UserClaims", secutitySchema);
+            builder.Entity<IdentityUserToken<string>>().ToTable("UserTokens", secutitySchema);
+            builder.Entity<IdentityUserLogin<string>>().ToTable("UserLogin", secutitySchema);
+
+
+
             builder.Entity<Branch>().Property(m => m.CreationDate).HasDefaultValueSql("GetDate()");
             builder.Entity<Order>().Property(m => m.creationDate).HasDefaultValueSql("GetDate()");
-            builder.Entity<Representative>().Property(m => m.creationDate).HasDefaultValueSql("GetDate()");
-            builder.Entity<Trader>().Property(m => m.creationDate).HasDefaultValueSql("GetDate()");
             builder.Entity<Branch>().Property(m => m.CreationDate).HasDefaultValueSql("GetDate()");
             builder.Entity<Branch>().Property(m => m.IsDeleted).HasDefaultValue(false);
-            builder.Entity<Employee>().Property(m => m.IsDeleted).HasDefaultValue(false);
+            builder.Entity<Branch>().HasData(new Branch { Id = 1, Name = "Ramsess", CreationDate = DateTime.Now, IsDeleted = false });
+            builder.Entity<Branch>().HasData(new Branch { Id = 2, Name = "Maady", CreationDate = DateTime.Now, IsDeleted = false });
+
+
+
             builder.Entity<Order>().Property(m => m.IsDeleted).HasDefaultValue(false);
+            builder.Entity<City>().Property(m => m.IsDeleted).HasDefaultValue(false);
+            builder.Entity<Governorate>().Property(m => m.IsDeleted).HasDefaultValue(false);
             builder.Entity<Product>().Property(m => m.IsDeleted).HasDefaultValue(false);
             builder.Entity<Representative>().Property(m => m.IsDeleted).HasDefaultValue(false);
             builder.Entity<Trader>().Property(m => m.IsDeleted).HasDefaultValue(false);

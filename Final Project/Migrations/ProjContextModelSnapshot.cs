@@ -18,11 +18,14 @@ namespace Final_Project.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "8.0.3")
+                .HasAnnotation("Proxies:ChangeTracking", false)
+                .HasAnnotation("Proxies:CheckEquality", false)
+                .HasAnnotation("Proxies:LazyLoading", true)
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Final_Project.Models.Account", b =>
+            modelBuilder.Entity("Final_Project.Models.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -34,14 +37,12 @@ namespace Final_Project.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("BranchId")
+                        .HasColumnType("int");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasMaxLength(21)
-                        .HasColumnType("nvarchar(21)");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -51,9 +52,7 @@ namespace Final_Project.Migrations
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
+                        .HasColumnType("bit");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -89,11 +88,11 @@ namespace Final_Project.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.Property<DateTime>("creationDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GetDate()");
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("BranchId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -103,11 +102,7 @@ namespace Final_Project.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.ToTable("AspNetUsers", (string)null);
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("Account");
-
-                    b.UseTphMappingStrategy();
+                    b.ToTable("Users", "security");
                 });
 
             modelBuilder.Entity("Final_Project.Models.Branch", b =>
@@ -136,6 +131,22 @@ namespace Final_Project.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Branches");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreationDate = new DateTime(2024, 3, 19, 13, 57, 3, 376, DateTimeKind.Local).AddTicks(351),
+                            IsDeleted = false,
+                            Name = "Ramsess"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreationDate = new DateTime(2024, 3, 19, 13, 57, 3, 376, DateTimeKind.Local).AddTicks(423),
+                            IsDeleted = false,
+                            Name = "Maady"
+                        });
                 });
 
             modelBuilder.Entity("Final_Project.Models.City", b =>
@@ -146,15 +157,25 @@ namespace Final_Project.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("GoverId")
+                    b.Property<int?>("GoverId")
                         .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(25)
                         .HasColumnType("nvarchar(25)");
 
-                    b.Property<decimal>("ShippingCost")
+                    b.Property<decimal?>("PickUpCost")
+                        .IsRequired()
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<decimal?>("ShippingCost")
+                        .IsRequired()
                         .HasColumnType("decimal(18, 2)");
 
                     b.HasKey("Id");
@@ -172,7 +193,7 @@ namespace Final_Project.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("Price")
+                    b.Property<decimal?>("Price")
                         .HasColumnType("decimal(18, 2)");
 
                     b.Property<string>("Type")
@@ -212,7 +233,7 @@ namespace Final_Project.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("Percentage")
+                    b.Property<decimal?>("Percentage")
                         .HasColumnType("decimal(18, 2)");
 
                     b.HasKey("Id");
@@ -228,6 +249,11 @@ namespace Final_Project.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(20)
@@ -241,6 +267,7 @@ namespace Final_Project.Migrations
                         new
                         {
                             Id = 1,
+                            IsDeleted = false,
                             Name = "Cairo"
                         });
                 });
@@ -253,17 +280,17 @@ namespace Final_Project.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("BranchId")
+                    b.Property<int?>("BranchId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ClientCityId")
+                    b.Property<int?>("ClientCityId")
                         .HasColumnType("int");
 
                     b.Property<string>("ClientEmailAddress")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ClientGovernorateId")
+                    b.Property<int?>("ClientGovernorateId")
                         .HasColumnType("int");
 
                     b.Property<string>("ClientName")
@@ -274,7 +301,7 @@ namespace Final_Project.Migrations
                     b.Property<bool>("DeliverToVillage")
                         .HasColumnType("bit");
 
-                    b.Property<int>("DeliveryTypeId")
+                    b.Property<int?>("DeliveryTypeId")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsDeleted")
@@ -286,19 +313,19 @@ namespace Final_Project.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal>("OrderPrice")
+                    b.Property<decimal?>("OrderPrice")
                         .HasColumnType("decimal(18, 2)");
 
-                    b.Property<decimal>("OrderPriceRecieved")
+                    b.Property<decimal?>("OrderPriceRecieved")
                         .HasColumnType("decimal(18, 2)");
 
-                    b.Property<int>("OrderStateId")
+                    b.Property<int?>("OrderStateId")
                         .HasColumnType("int");
 
-                    b.Property<int>("OrderTypeId")
+                    b.Property<int?>("OrderTypeId")
                         .HasColumnType("int");
 
-                    b.Property<int>("PaymentMethodId")
+                    b.Property<int?>("PaymentMethodId")
                         .HasColumnType("int");
 
                     b.Property<string>("Phone1")
@@ -312,13 +339,13 @@ namespace Final_Project.Migrations
                     b.Property<string>("RepresentativeId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<decimal>("ShippingPrice")
+                    b.Property<decimal?>("ShippingPrice")
                         .HasColumnType("decimal(18, 2)");
 
-                    b.Property<decimal>("ShippingPriceRecived")
+                    b.Property<decimal?>("ShippingPriceRecived")
                         .HasColumnType("decimal(18, 2)");
 
-                    b.Property<decimal>("TotalWeight")
+                    b.Property<decimal?>("TotalWeight")
                         .HasColumnType("decimal(18, 2)");
 
                     b.Property<string>("TraderId")
@@ -513,13 +540,13 @@ namespace Final_Project.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal>("Price")
+                    b.Property<decimal?>("Price")
                         .HasColumnType("decimal(18, 2)");
 
-                    b.Property<int>("Quantity")
+                    b.Property<int?>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("Weight")
+                    b.Property<decimal?>("Weight")
                         .HasColumnType("decimal(18, 2)");
 
                     b.HasKey("Id");
@@ -527,6 +554,82 @@ namespace Final_Project.Migrations
                     b.HasIndex("OrderId");
 
                     b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("Final_Project.Models.Representative", b =>
+                {
+                    b.Property<string>("AppUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("BranchId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("CompanyPercentageOfOrder")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<int?>("DiscountTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("GovernorateId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.HasKey("AppUserId");
+
+                    b.HasIndex("BranchId");
+
+                    b.HasIndex("DiscountTypeId");
+
+                    b.HasIndex("GovernorateId");
+
+                    b.ToTable("Representatives");
+                });
+
+            modelBuilder.Entity("Final_Project.Models.Trader", b =>
+                {
+                    b.Property<string>("AppUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("BranchId")
+                        .IsRequired()
+                        .HasColumnType("int");
+
+                    b.Property<int?>("CityId")
+                        .IsRequired()
+                        .HasColumnType("int");
+
+                    b.Property<int?>("GoverId")
+                        .IsRequired()
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<int?>("SpecialPickupCost")
+                        .HasColumnType("int");
+
+                    b.Property<string>("StoreName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("TraderTaxForRejectedOrders")
+                        .HasColumnType("int");
+
+                    b.HasKey("AppUserId");
+
+                    b.HasIndex("BranchId");
+
+                    b.HasIndex("CityId");
+
+                    b.HasIndex("GoverId");
+
+                    b.ToTable("Traders");
                 });
 
             modelBuilder.Entity("Final_Project.Models.TraderSpecialPriceForCities", b =>
@@ -537,7 +640,11 @@ namespace Final_Project.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CityId")
+                    b.Property<string>("AppUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("CityId")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsDeleted")
@@ -545,18 +652,14 @@ namespace Final_Project.Migrations
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
 
-                    b.Property<int>("Shippingprice")
+                    b.Property<int?>("Shippingprice")
                         .HasColumnType("int");
-
-                    b.Property<string>("TraderId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CityId");
+                    b.HasIndex("AppUserId");
 
-                    b.HasIndex("TraderId");
+                    b.HasIndex("CityId");
 
                     b.ToTable("TraderSpecialPriceForCities");
                 });
@@ -569,10 +672,10 @@ namespace Final_Project.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("DefaultSize")
+                    b.Property<decimal?>("DefaultSize")
                         .HasColumnType("decimal(18, 2)");
 
-                    b.Property<int>("PriceForEachExtraKilo")
+                    b.Property<int?>("PriceForEachExtraKilo")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -612,7 +715,7 @@ namespace Final_Project.Migrations
                         .HasDatabaseName("RoleNameIndex")
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
-                    b.ToTable("AspNetRoles", (string)null);
+                    b.ToTable("Roles", "security");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -637,7 +740,7 @@ namespace Final_Project.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetRoleClaims", (string)null);
+                    b.ToTable("RoleClaims", "security");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -662,7 +765,7 @@ namespace Final_Project.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserClaims", (string)null);
+                    b.ToTable("UserClaims", "security");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
@@ -684,7 +787,7 @@ namespace Final_Project.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserLogins", (string)null);
+                    b.ToTable("UserLogin", "security");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
@@ -699,7 +802,7 @@ namespace Final_Project.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetUserRoles", (string)null);
+                    b.ToTable("UserRoles", "security");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -718,118 +821,25 @@ namespace Final_Project.Migrations
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
-                    b.ToTable("AspNetUserTokens", (string)null);
+                    b.ToTable("UserTokens", "security");
                 });
 
-            modelBuilder.Entity("Final_Project.Models.Employee", b =>
+            modelBuilder.Entity("Final_Project.Models.ApplicationUser", b =>
                 {
-                    b.HasBaseType("Final_Project.Models.Account");
+                    b.HasOne("Final_Project.Models.Branch", "Branch")
+                        .WithMany("Users")
+                        .HasForeignKey("BranchId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Property<int>("BranchId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasIndex("BranchId");
-
-                    b.HasDiscriminator().HasValue("Employee");
-                });
-
-            modelBuilder.Entity("Final_Project.Models.Representative", b =>
-                {
-                    b.HasBaseType("Final_Project.Models.Account");
-
-                    b.Property<int>("BranchId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("CompanyPercentageOfOrder")
-                        .HasColumnType("decimal(18, 2)");
-
-                    b.Property<int>("DiscountTypeId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("GovernorateId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasIndex("BranchId");
-
-                    b.HasIndex("DiscountTypeId");
-
-                    b.HasIndex("GovernorateId");
-
-                    b.ToTable("AspNetUsers", t =>
-                        {
-                            t.Property("BranchId")
-                                .HasColumnName("Representative_BranchId");
-
-                            t.Property("Role")
-                                .HasColumnName("Representative_Role");
-                        });
-
-                    b.HasDiscriminator().HasValue("Representative");
-                });
-
-            modelBuilder.Entity("Final_Project.Models.Trader", b =>
-                {
-                    b.HasBaseType("Final_Project.Models.Account");
-
-                    b.Property<int?>("BranchId")
-                        .IsRequired()
-                        .HasColumnType("int");
-
-                    b.Property<int?>("CityId")
-                        .IsRequired()
-                        .HasColumnType("int");
-
-                    b.Property<int?>("GoverId")
-                        .IsRequired()
-                        .HasColumnType("int");
-
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("SpecialPickupCost")
-                        .HasColumnType("int");
-
-                    b.Property<string>("StoreName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("TraderTaxForRejectedOrders")
-                        .HasColumnType("int");
-
-                    b.HasIndex("BranchId");
-
-                    b.HasIndex("CityId");
-
-                    b.HasIndex("GoverId");
-
-                    b.ToTable("AspNetUsers", t =>
-                        {
-                            t.Property("BranchId")
-                                .HasColumnName("Trader_BranchId");
-
-                            t.Property("Role")
-                                .HasColumnName("Trader_Role");
-                        });
-
-                    b.HasDiscriminator().HasValue("Trader");
+                    b.Navigation("Branch");
                 });
 
             modelBuilder.Entity("Final_Project.Models.City", b =>
                 {
                     b.HasOne("Final_Project.Models.Governorate", "Governorate")
                         .WithMany("Cities")
-                        .HasForeignKey("GoverId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("GoverId");
 
                     b.Navigation("Governorate");
                 });
@@ -838,52 +848,38 @@ namespace Final_Project.Migrations
                 {
                     b.HasOne("Final_Project.Models.Branch", "Branch")
                         .WithMany()
-                        .HasForeignKey("BranchId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("BranchId");
 
                     b.HasOne("Final_Project.Models.City", "ClientCity")
                         .WithMany()
-                        .HasForeignKey("ClientCityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ClientCityId");
 
                     b.HasOne("Final_Project.Models.Governorate", "ClientGovernorate")
                         .WithMany()
-                        .HasForeignKey("ClientGovernorateId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ClientGovernorateId");
 
                     b.HasOne("Final_Project.Models.DeliverType", "DeliverType")
                         .WithMany()
-                        .HasForeignKey("DeliveryTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("DeliveryTypeId");
 
                     b.HasOne("Final_Project.Models.OrderState", "OrderState")
                         .WithMany()
-                        .HasForeignKey("OrderStateId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("OrderStateId");
 
                     b.HasOne("Final_Project.Models.OrderType", "OrderType")
                         .WithMany()
-                        .HasForeignKey("OrderTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("OrderTypeId");
 
                     b.HasOne("Final_Project.Models.PaymentMethod", "PaymentMethod")
                         .WithMany()
-                        .HasForeignKey("PaymentMethodId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("PaymentMethodId");
 
                     b.HasOne("Final_Project.Models.Representative", "Representative")
                         .WithMany()
                         .HasForeignKey("RepresentativeId");
 
                     b.HasOne("Final_Project.Models.Trader", "Trader")
-                        .WithMany("Orders")
+                        .WithMany()
                         .HasForeignKey("TraderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -916,19 +912,81 @@ namespace Final_Project.Migrations
                     b.Navigation("Order");
                 });
 
-            modelBuilder.Entity("Final_Project.Models.TraderSpecialPriceForCities", b =>
+            modelBuilder.Entity("Final_Project.Models.Representative", b =>
                 {
-                    b.HasOne("Final_Project.Models.City", "City")
+                    b.HasOne("Final_Project.Models.ApplicationUser", "AppUser")
                         .WithMany()
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Final_Project.Models.Branch", "Branch")
+                        .WithMany()
+                        .HasForeignKey("BranchId");
+
+                    b.HasOne("Final_Project.Models.DiscountType", "DiscountType")
+                        .WithMany()
+                        .HasForeignKey("DiscountTypeId");
+
+                    b.HasOne("Final_Project.Models.Governorate", "Governorate")
+                        .WithMany()
+                        .HasForeignKey("GovernorateId");
+
+                    b.Navigation("AppUser");
+
+                    b.Navigation("Branch");
+
+                    b.Navigation("DiscountType");
+
+                    b.Navigation("Governorate");
+                });
+
+            modelBuilder.Entity("Final_Project.Models.Trader", b =>
+                {
+                    b.HasOne("Final_Project.Models.ApplicationUser", "AppUser")
+                        .WithMany()
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Final_Project.Models.Branch", "Branch")
+                        .WithMany()
+                        .HasForeignKey("BranchId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Final_Project.Models.City", "City")
+                        .WithMany("Traders")
                         .HasForeignKey("CityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Final_Project.Models.Trader", "Trader")
-                        .WithMany("SpecialPriceForCities")
-                        .HasForeignKey("TraderId")
+                    b.HasOne("Final_Project.Models.Governorate", "Governorate")
+                        .WithMany("Traders")
+                        .HasForeignKey("GoverId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("AppUser");
+
+                    b.Navigation("Branch");
+
+                    b.Navigation("City");
+
+                    b.Navigation("Governorate");
+                });
+
+            modelBuilder.Entity("Final_Project.Models.TraderSpecialPriceForCities", b =>
+                {
+                    b.HasOne("Final_Project.Models.Trader", "Trader")
+                        .WithMany("SpecialPriceForCities")
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Final_Project.Models.City", "City")
+                        .WithMany()
+                        .HasForeignKey("CityId");
 
                     b.Navigation("City");
 
@@ -946,7 +1004,7 @@ namespace Final_Project.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("Final_Project.Models.Account", null)
+                    b.HasOne("Final_Project.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -955,7 +1013,7 @@ namespace Final_Project.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("Final_Project.Models.Account", null)
+                    b.HasOne("Final_Project.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -970,7 +1028,7 @@ namespace Final_Project.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Final_Project.Models.Account", null)
+                    b.HasOne("Final_Project.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -979,83 +1037,16 @@ namespace Final_Project.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("Final_Project.Models.Account", null)
+                    b.HasOne("Final_Project.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Final_Project.Models.Employee", b =>
-                {
-                    b.HasOne("Final_Project.Models.Branch", "Branch")
-                        .WithMany("Employees")
-                        .HasForeignKey("BranchId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Branch");
-                });
-
-            modelBuilder.Entity("Final_Project.Models.Representative", b =>
-                {
-                    b.HasOne("Final_Project.Models.Branch", "Branch")
-                        .WithMany()
-                        .HasForeignKey("BranchId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Final_Project.Models.DiscountType", "DiscountType")
-                        .WithMany()
-                        .HasForeignKey("DiscountTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Final_Project.Models.Governorate", "Governorate")
-                        .WithMany()
-                        .HasForeignKey("GovernorateId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Branch");
-
-                    b.Navigation("DiscountType");
-
-                    b.Navigation("Governorate");
-                });
-
-            modelBuilder.Entity("Final_Project.Models.Trader", b =>
-                {
-                    b.HasOne("Final_Project.Models.Branch", "Branch")
-                        .WithMany("Traders")
-                        .HasForeignKey("BranchId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Final_Project.Models.City", "City")
-                        .WithMany("Traders")
-                        .HasForeignKey("CityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Final_Project.Models.Governorate", "Governorate")
-                        .WithMany("Traders")
-                        .HasForeignKey("GoverId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Branch");
-
-                    b.Navigation("City");
-
-                    b.Navigation("Governorate");
-                });
-
             modelBuilder.Entity("Final_Project.Models.Branch", b =>
                 {
-                    b.Navigation("Employees");
-
-                    b.Navigation("Traders");
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("Final_Project.Models.City", b =>
@@ -1077,8 +1068,6 @@ namespace Final_Project.Migrations
 
             modelBuilder.Entity("Final_Project.Models.Trader", b =>
                 {
-                    b.Navigation("Orders");
-
                     b.Navigation("SpecialPriceForCities");
                 });
 #pragma warning restore 612, 618

@@ -15,7 +15,7 @@ namespace Final_Project.Models
         public DateTime? CreationDate { get; set; }
 
         public bool IsDeleted { get; set; } = false;
-        public virtual List<Trader> Traders { get; set; }= new List<Trader>();
-        public virtual List<Employee> Employees { get; set; } = new List<Employee>();
+       
+        public virtual List<ApplicationUser>? Users { get; set; } = new List<ApplicationUser>();
     }
 }

@@ -12,7 +12,7 @@ namespace Final_Project.Models
         public bool IsDeleted { get; set; }
 
         [ForeignKey("Trader")]
-        public string TraderId { get; set; }
+        public string AppUserId { get; set; }
         public virtual Trader? Trader { get; set; }
 
         [ForeignKey("City")]

@@ -10,6 +10,7 @@ namespace Final_Project.Models
         [MinLength(3, ErrorMessage = "Governorate name must be between 3 and 20 characters")]
         public string Name { get; set; }
         public virtual List<Trader> Traders { get; set; } = new List<Trader>();
+        public bool IsDeleted { get; set; } = false;
 
         public virtual List<City> Cities { get; set; } = new List<City>();
     }

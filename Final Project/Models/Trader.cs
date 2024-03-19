@@ -4,9 +4,13 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Final_Project.Models
 {
-    public class Trader:Account
+    public class Trader
     {
         //public int Id { get; set; }
+        [ForeignKey("AppUser")]
+        public string AppUserId { get; set; }
+        public virtual ApplicationUser AppUser { get; set; }
+
 
         [Display(Name = "Store Name")]
         public string StoreName { get; set; }
@@ -35,12 +39,11 @@ namespace Final_Project.Models
         public int? BranchId { get; set; }
         public virtual Branch? Branch { get; set; }
 
-        public string Role { get; set; } = "Trader";
+        public bool IsDeleted { get; set; }
 
 
         public virtual List<TraderSpecialPriceForCities>? SpecialPriceForCities { get; set; } =
                              new List<TraderSpecialPriceForCities>();
 
-        public virtual List<Order> Orders { get; set; } = new List<Order>();
     }
 }

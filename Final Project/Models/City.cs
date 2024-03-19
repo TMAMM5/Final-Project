@@ -11,8 +11,16 @@ namespace Final_Project.Models
         [MinLength(3, ErrorMessage = "City name must be between 3 and 25 Character")]
         public string Name { get; set; }
         [Required(ErrorMessage ="Please Enter Valid Cost")]
+        [Display(Name = "Shipping Cost")]
+
         [Column(TypeName = "decimal(18, 2)")]
         public decimal? ShippingCost { get; set; }
+        [Required(ErrorMessage = "Please enter pick up cost")]
+        [Display(Name = "Pickup Cost")]
+        [Column(TypeName = "decimal(18, 2)")]
+        public decimal? PickUpCost { get; set; }
+        public bool IsDeleted { get; set; }
+
         [ForeignKey("Governorate")]
         public int? GoverId { get; set; }
         public virtual Governorate? Governorate { get; set; }
