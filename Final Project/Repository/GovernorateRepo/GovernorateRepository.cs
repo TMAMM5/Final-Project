@@ -17,8 +17,9 @@ namespace Final_Project.Repository.GovernorateRepo
         public void Delete(int id)
         {
             Governorate governorate = GetById(id);
-            _context.governorates.Remove(governorate);
-            Save();
+            governorate.IsDeleted = true;
+            //_context.governorates.Remove(governorate);
+            //Save();
         }
 
       public void Update(Governorate governorate)

@@ -1,0 +1,78 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    int i = 0;
+}
+@model List<Governorate>
+
+
+<h1 class="text-light">Governorates</h1>
+
+<div class="container my-2">
+    <div class="row justify-content-between">
+        <div>
+            <h6 class="mt-2"><i class="fa-solid fa-house"></i> > <a asp-controller="Governorate" asp-action="Index" class="text-decoration-none">Governorates</a></h6>
+        </div>
+
+        <div>
+            <a asp-action="Edit" class="btn btn-primary">Add Governorate</a>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow mb-4 text-center">
+    <div class="card-body">
+        <div class="table-responsive">
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">State</th>
+
+            <th scope="col">Edit</th>
+            <th scope="col">City</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(Governorate g in Model)
+        {
+            
+        <tr>
+            <th scope="row">@(++i)</th>
+            <td>@g.Name</td>
+            <td>
+
+                <label class="switch">
+                    <input id="switch-@g.Id" onclick="changeStatus(@g.Id)" type="checkbox" @(g.IsDeleted ? "" : "checked")>
+                    <span class="slider round"></span>
+                </label>
+            </td>
+                <td><a asp-action="Edit" asp-controller="Governorate" asp-route-id="@g.Id" class="btn btn-success"><i class="fa-solid fa-pen-to-square"></i></a></td>
+            <td><a asp-action="Details" asp-controller="Governorate" asp-route-id="@g.Id">City</a></td>
+        </tr>
+        }
+       
+    </tbody>
+</table>
+</div>
+</div>
+</div>
+@section Scripts {
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script>
+        function changeStatus(id) {
+            $.ajax({
+                url: `/Governorate/ChangeState/${id}`,
+                method: 'GET',
+                success: function () {
+                },
+                error: function () {
+                }
+            });
+
+        }
+    </script>
+}
