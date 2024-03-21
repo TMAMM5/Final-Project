@@ -9,7 +9,7 @@ namespace Final_Project.Repository.WeightSettingRepo
         {
             _context = context;
         }
-        public IEnumerable<WeightSetting> GetAll()
+        public List<WeightSetting> GetAll()
         {
             return _context.WeightSetting.ToList();
         }
