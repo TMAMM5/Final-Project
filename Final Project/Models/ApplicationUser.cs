@@ -15,9 +15,9 @@ namespace Final_Project.Models
         //    "With Minimum Length 8 Character")]
         //public string Password { get; set; }
 
-        //[MaxLength(30)]
-        //[MinLength(3, ErrorMessage = "Name must be at least 3 characters long.")] 
-        //public string Name { get; set; }
+        [MaxLength(30)]
+        [MinLength(3, ErrorMessage = "Name must be at least 3 characters long.")]
+        public string Name { get; set; }
 
         //[RegularExpression(@"^01[0125][0-9]{8}$", ErrorMessage = "Please Enter Valid Phone Number")]
         //public string Phone { get; set; }

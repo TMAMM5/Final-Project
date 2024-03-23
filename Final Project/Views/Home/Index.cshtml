@@ -2,13 +2,17 @@
     ViewData["Title"] = "Home Page";
 }
 <style>
-    img{
+    .mine{
         display:flex;
         justify-content:center;
         align-items:center;
         border-radius:15px;
-        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
-        opacity:0.9;
+        box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.5);
+        transition: transform 1s ease;
     }
+
+        .mine:hover {
+            transform: scale(1.1);
+        }
 </style>
-<img  src="/img/pic2.jpg" width="1200px"/>
+<img  class="mine" src="/img/pic2.jpg" width="1200px"/>

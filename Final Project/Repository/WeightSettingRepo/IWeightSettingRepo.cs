@@ -4,7 +4,7 @@ namespace Final_Project.Repository.WeightSettingRepo
 {
     public interface IWeightSettingRepo
     {
-        IEnumerable<WeightSetting> GetAll();
+        List<WeightSetting> GetAll();
         WeightSetting GetById(int id);
         void Save();
         void Update(WeightSetting weightSetting);
