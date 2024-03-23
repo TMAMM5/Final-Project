@@ -48,8 +48,9 @@ namespace Final_Project.Controllers
         {
             if (ModelState.IsValid)
             {
-
-            _governorateRepository.Update(governorate);
+            Governorate newGovernorate = _governorateRepository.GetById(governorate.Id);
+                newGovernorate.Name = governorate.Name;
+            _governorateRepository.Update(newGovernorate);
             _governorateRepository.Save();
             return RedirectToAction("Index");
             }
