@@ -15,20 +15,18 @@ namespace Final_Project.Controllers
             this.cityRepository = cityRepository;
             this.governorateRepository = governorateRepository;
         }
-        [Authorize]
         public IActionResult Index()
         {
             List<City> cityList = cityRepository.GetAll();
 
             return View(cityList);
         }
-        [Authorize]
+
         public IActionResult Create(int id) 
         {
             ViewData["Governrates"]= governorateRepository.GetAll();
             return View();
         }
-        [Authorize]
         [HttpPost]
         public IActionResult Create(City city)
         {
@@ -41,25 +39,24 @@ namespace Final_Project.Controllers
                 ViewData["Governrates"] = governorateRepository.GetAll();
                 return View(city);     
         }
-        [Authorize]
         public IActionResult Edit(int id)
         {
             City city = cityRepository.GetById(id);
             ViewData["Governrates"] = governorateRepository.GetAll();
             return View(city) ;
         }
-        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Edit(City city)
         {
             if (ModelState.IsValid)
             {
+                //cityRepository.Edit(city);
                 var newCity = cityRepository.GetById(city.Id);
                 city.IsDeleted = newCity.IsDeleted;
                 newCity.Name = city.Name;
                 newCity.ShippingCost = city.ShippingCost;
                 newCity.PickUpCost = city.PickUpCost;
-                newCity.Governorate = city.Governorate;
+                newCity.GoverId = city.GoverId;
                 cityRepository.Edit(newCity);
                 cityRepository.Save();
                 return RedirectToAction("Index");
@@ -67,8 +64,7 @@ namespace Final_Project.Controllers
                 ViewData["Governrates"] = governorateRepository.GetAll();
                 return View(city);   
         }
-        [Authorize]
-        public IActionResult Delete(int id)
+        public IActionResult ChangeState(int id)
         {
             City city = cityRepository.GetById(id);
             if (city == null)

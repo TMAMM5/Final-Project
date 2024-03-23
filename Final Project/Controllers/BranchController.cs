@@ -13,18 +13,18 @@ namespace Final_Project.Controllers
             this.branchRepository = branchRepository;
         }
 
-        [Authorize]
+
         public IActionResult Index()
         {
             List<Branch> branchs = branchRepository.GetAll();
             return View(branchs);
         }
-        [Authorize]
+
         public IActionResult Create()
         {
             return View();
         }
-        [Authorize]
+
         [HttpPost]
         public  IActionResult Create(Branch branch)
         {
@@ -38,27 +38,27 @@ namespace Final_Project.Controllers
         }
 
 
-        [Authorize]
         public IActionResult Edit(int id)
         {
             Branch branch = branchRepository.GetById(id);
             return View(branch);
         }
-        [Authorize]
+
         [HttpPost]
         public IActionResult Edit(Branch branch)
         {
             if (ModelState.IsValid)
             {
-                branchRepository.Edit(branch);
-                branchRepository.Save();
-                return RedirectToAction("Index");
+                    Branch newBranch = branchRepository.GetById(branch.Id);
+                    newBranch.Name = branch.Name;
+                    branchRepository.Edit(newBranch);
+                    branchRepository.Save();
+                    return RedirectToAction("Index");
             }
             return View(branch);
 
         }
-        [Authorize]
-        public IActionResult Delete(int id)
+        public IActionResult ChangeState(int id)
         {
             Branch branch = branchRepository.GetById(id);
             if(branch == null)
