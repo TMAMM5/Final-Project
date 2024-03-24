@@ -11,6 +11,7 @@ namespace Final_Project.Repository.OrderRepo
         decimal? CalculateTotalPrice(Order order);
         void Delete(int id);
         List<Order> GetAll();
+        void Add(Order order);
         public List<Order> GetByOrderState(int stateId);
         public List<Order> GetByRepresentativeId(string representativeId);
         Order GetById(int id);
