@@ -14,9 +14,9 @@ using Final_Project.Repository.RepresintativeRepo;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
-
 using Microsoft.AspNetCore.Authorization;
 using NuGet.Protocol;
+using Final_Project.ViewModel;
 
 
 namespace Final_Project.Controllers
@@ -79,28 +79,33 @@ namespace Final_Project.Controllers
             {
                 orders = _orderRepository.GetAll();
             }
-            List<OrderReporttWithOrderByStatusDateViewModel> OrdersViewModel = new List<OrderReporttWithOrderByStatusDateViewModel>();
+            List<OrderReporttWithOrderByStatusDateVM> OrdersViewModel = new List<OrderReporttWithOrderByStatusDateVM>();
+
             //error * **************************
             foreach (var item in orders)
             {
-                //City city = _cityRepository.GetById(item.ClientCityId);
-                //Governorate governorate = _governorateRepository.GetById(item.ClientGovernorateId);
-                //OrderState orderState = _orderStateRepository.GetById(item.OrderStateId);
-                //Trader trader = _traderRepository.GetById(item.TraderId);
+                City city = _cityRepository.GetById((int)item.ClientCityId);
+                Governorate governorate = _governorateRepository.GetById((int)item.ClientGovernorateId);
+                OrderState orderState = _orderStateRepository.getById((int)item.OrderStateId);
+                Trader trader = _traderRepository.GetById(item.TraderId);
 
-                //OrderReporttWithOrderByStatusDateViewModel ordersViewModelItem = new OrderReporttWithOrderByStatusDateViewModel();
-                //ordersViewModelItem.Id = item.Id;
-                //ordersViewModelItem.Date = item.creationDate;
-                //ordersViewModelItem.Client = item.ClientName;
-                //ordersViewModelItem.PhoneNumber = item.ClientPhone1;
-                //ordersViewModelItem.city = city.Name;
-                //ordersViewModelItem.Governorate = governorate.Name;
-                //ordersViewModelItem.ShippingPrice = item.ShippingPrice;
-                //ordersViewModelItem.Status = orderState.Name;
-                //ordersViewModelItem.Trader = trader.AppUser.Name;
+                OrderReporttWithOrderByStatusDateVM ordersViewModelItem = new OrderReporttWithOrderByStatusDateVM();
+                
+                
+              
+                ordersViewModelItem.Id= item.Id;
+                ordersViewModelItem.Date = item.creationDate;
+                ordersViewModelItem.Client = item.ClientName;
+                ordersViewModelItem.PhoneNumber = item.Phone1;
+                ordersViewModelItem.City = city.Name;
+                ordersViewModelItem.Governorate = governorate.Name;
+                ordersViewModelItem.ShippingPrice = (decimal)item.ShippingPrice;
+                ordersViewModelItem.Status = orderState.Name;
+                ordersViewModelItem.Trader = trader.AppUser.Name;
 
-                //OrdersViewModel.Add(ordersViewModelItem);
+                OrdersViewModel.Add(ordersViewModelItem);
             }
+
             ViewData["OrderStates"] = _orderStateRepository.GetOrders();
 
             return View(OrdersViewModel);
@@ -146,24 +151,23 @@ namespace Final_Project.Controllers
             ViewData["Governorates"] = _governorateRepository.GetAll();
 
             if (ModelState.IsValid)
-            {//error**********************
+            {
                 order.TotalWeight = ProductsWeight(order.OrderNo);
                 order.ShippingPrice = _orderRepository.CalculateTotalPrice(order) /*+ ProductsCost(order.OrderNo)*/;
                 order.OrderPrice = order.ShippingPrice + ProductsCost(order.OrderNo);
                 order.Products = _productRepository.GetByOrderNumber(order.OrderNo);
-                //error =>add
-                //_orderRepository.Add(order);
+                _orderRepository.Add(order);
                 _orderRepository.Save();
                 return RedirectToAction("Index");
             }
             return View(order);
         }
-        //**********************
-        //public IActionResult getCitesByGovernrate(int govId)
-        //{
-        //    List<City> cities = _cityRepository.GetAllCitiesByGovId(govId);
-        //    return Json(cities);
-        //}
+        
+        public IActionResult getCitesByGovernrate(int govId)
+        {
+            List<City> cities = _cityRepository.GetAllCitiesByGovId(govId);
+            return Json(cities);
+        }
         public IActionResult Edit(int id)
         {
             ViewData["DeliverTypes"] = _deliverTypeRepository.GetAll();
@@ -175,7 +179,7 @@ namespace Final_Project.Controllers
             Order order = _orderRepository.GetById(id);
 
             ViewData["City"] = _cityRepository.GetAll().Where(c => c.GoverId == order.ClientGovernorateId).ToList();
-            //repooooooo**************** Getproducts()=>Getall()
+            //  EDIT=>REPO ..... Getproducts()=>Getall()
             order.Products = _productRepository.GetProducts().Where(p => p.OrderNO == order.OrderNo).ToList();
             
             return View(order);
@@ -217,42 +221,27 @@ namespace Final_Project.Controllers
             _orderRepository.Save();
             return Ok();
         }
-
-
-
-
-
-
-
-        public decimal ProductsWeight(string orderNO)
+        public decimal? ProductsWeight(string orderNO)
         {
             var orderProducts = _productRepository.GetProducts().Where(p => p.OrderNO == orderNO);
-            decimal weight = 0;
+            decimal? weight = 0;
             foreach (var product in orderProducts)
             {
-                //weight += product.Weight * product.Quantity;
+                weight += product.Weight * product.Quantity;
             }
             return weight;
 
         }
-        public decimal ProductsCost(string orderNO)
+        public decimal? ProductsCost(string orderNO)
         {
             var orderProducts = _productRepository.GetProducts().Where(p => p.OrderNO == orderNO);
-            decimal cost = 0;
+            decimal? cost = 0;
             foreach (var product in orderProducts)
             {
-                //cost += product.Price * product.Quantity;
+                cost += product.Price * product.Quantity;
             }
             return cost;
         }
-
-
-
-
-
-
-
-
     }
 }
 

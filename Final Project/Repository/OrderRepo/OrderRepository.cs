@@ -35,6 +35,8 @@ namespace Final_Project.Repository.OrderRepo
             _context.SaveChanges();
         }
 
+
+
         public decimal? CalculateTotalPrice(Order order)
         {
             decimal? Price = 0;
@@ -102,5 +104,9 @@ namespace Final_Project.Repository.OrderRepo
             return _context.Orders.Where(o => o.RepresentativeId == representativeId && o.IsDeleted == false && o.OrderStateId != 4).ToList();
         }
 
+        public void Add(Order order)
+        {
+            _context.Orders.Add(order);
+        }
     }
 }
