@@ -331,6 +331,46 @@ namespace Final_Project.Controllers
             return cost;
         }
 
+        //public async Task<IActionResult> Status(int id)
+        //{
+        //    Order order = _orderRepository.GetById(id);
+
+        //    var representativesInSameCity = RepresintativeRepository.GetByBranch(order.BranchId);
+
+        //    List<RepresentativeGovBranchPercentageViewModel> viewmodels = new List<RepresentativeGovBranchPercentageViewModel>();
+
+        //    foreach (var item in representativesInSameCity)
+        //    {
+        //        var user = await _userManager.FindByIdAsync(item.AppUserId);
+
+        //        RepresentativeGovBranchPercentageViewModel viewmodel = new RepresentativeGovBranchPercentageViewModel()
+        //        {
+        //            AppUserId = user.Id,
+        //            Name = user.Name,
+        //        };
+        //        viewmodels.Add(viewmodel);
+        //    }
+
+
+        //    ViewData["OrderStatus"] = _orderStateRepository.GetForEmp();
+        //    ViewData["RepresentativesInSameCity"] = viewmodels;
+        //    return View(order);
+        //}
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Status(Order order)
+        {
+            //GetAll=>GetOrders
+            ViewData["OrderStatus"] = _orderStateRepository.GetOrders();
+            Order orderFromDB = _orderRepository.GetById(order.Id);
+            orderFromDB.OrderStateId = order.OrderStateId;
+            _orderRepository.Save();
+
+            return RedirectToAction("Index");
+        }
+
         public IActionResult LinkOrderToRepresentative(string orderId, string repId)
         {
             var order = _orderRepository.GetById(int.Parse(orderId));
