@@ -46,10 +46,10 @@ namespace Final_Project.Controllers
         [HttpPost]
         public IActionResult Edit(Governorate governorate)
         {
+            var newGovernorate = _governorateRepository.GetById(governorate.Id);
+                newGovernorate.Name = governorate.Name;
             if (ModelState.IsValid)
             {
-            Governorate newGovernorate = _governorateRepository.GetById(governorate.Id);
-                newGovernorate.Name = governorate.Name;
             _governorateRepository.Update(newGovernorate);
             _governorateRepository.Save();
             return RedirectToAction("Index");

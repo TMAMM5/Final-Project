@@ -1,0 +1,43 @@
+﻿@model OrderStatusVM
+
+@{
+    ViewData["Title"] = "Home";
+}
+<style>
+    .card-title {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+</style>
+
+
+<h1 class="alert alert-primary text-center text-black">Hello @ViewBag.TraderName</h1>
+<div class="container ">
+    <div class="col-md-12 ">
+        <div class="row ">
+            @for (int i = 0; i < ViewBag.OrderStatusNumbers.Count; i++)
+            {
+                <div class="col-xl-4 col-lg-6">
+                    <div class="card l-bg-blue-dark overflow-hidden">
+                        <div class="card-statistic-3 p-4">
+                            <div class="card-icon card-icon-large"><i class="fas fa-shopping-cart"></i></div>
+                            <div class="mb-4">
+                                <h5 class="card-title mb-0">@ViewBag.OrderStatus[i].Name</h5>
+                            </div>
+                            <div class="row align-items-center mb-2 d-flex">
+                                <div class="col-8">
+                                    <h2 class="d-flex align-items-center mb-0">
+                                        @ViewBag.OrderStatusNumbers[i]
+                                    </h2>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            }
+        </div>
+    </div>
+</div>

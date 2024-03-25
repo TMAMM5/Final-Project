@@ -24,7 +24,7 @@ namespace Final_Project.Repository.CityRepo
 
         public List<City> GetAllCitiesByGovId(int id)
         {
-            return context.Cities.Where(c => c.GoverId == id).ToList();
+            return context.Cities.Where(c => c.GoverId == id).Select(c=>new City { Id=c.Id , Name=c.Name}).ToList();
         }
 
         public void Edit(City city)

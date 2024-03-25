@@ -7,6 +7,7 @@ using Final_Project.Repository.OrderRepo;
 using Final_Project.Repository.OrderStateRepo;
 using Final_Project.Repository.TraderRepo;
 using Final_Project.ViewModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -110,7 +111,7 @@ namespace Final_Project.Controllers
             return RedirectToAction("Index");
         }
 
-
+        [HttpGet]
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
@@ -125,11 +126,12 @@ namespace Final_Project.Controllers
             var user = await _userManager.FindByIdAsync(id);
             var model = new TraderVM
             {
+                AppUserId=user.Id,
                 Email = user.Email,
                 Name = user.Name,
                 Phone = user.PhoneNumber,
                 Address = user.Address,
-                Password = "Admin2024",
+                //Password = "Admin2024",
                 BranchId = user.BranchId,
                 GoverId = (int)trader.GoverId,
                 CityId = (int)trader.CityId,
@@ -149,6 +151,7 @@ namespace Final_Project.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(TraderVM model)
         {
+            //model.Password = "Admin2024";
             var user = await _userManager.FindByIdAsync(model.AppUserId);
             if (user == null)
             {
@@ -187,10 +190,30 @@ namespace Final_Project.Controllers
             traderFDB.StoreName = model.StoreName;
             traderFDB.TraderTaxForRejectedOrders = model.TraderTaxForRejectedOrders;
             _traderRepository.Save();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> Delete(string id)
+        {
+            if (id == null)
+                return BadRequest();
+            var trader = _traderRepository.GetById(id);
+            if (trader == null)
+                return NotFound();
+
+            var user = await _userManager.FindByIdAsync(id);
+            user.IsDeleted = true;
+
+            await _userManager.UpdateAsync(user);
+
+            trader.IsDeleted = true;
+            _traderRepository.Update(trader);
+            _traderRepository.Save();
+            return Content("sucsses");
+        }
+
+      
+        public async Task<IActionResult> changeState(string id)
         {
             if (id == null)
                 return BadRequest();
@@ -206,6 +229,13 @@ namespace Final_Project.Controllers
             return Ok();
         }
 
+        [HttpGet]
+        [Route("/Trader/getCitesByGovernrate/{govId}")]
+        public IActionResult getCitesByGovernrate(int govId)
+        {
+            List<City> cities = _cityRepository.GetAllCitiesByGovId(govId);
+            return Json(cities);
+        }
 
         public IActionResult Home()
         {
