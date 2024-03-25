@@ -221,6 +221,94 @@ namespace Final_Project.Controllers
             _orderRepository.Save();
             return Ok();
         }
+
+        public IActionResult GetFilteredOrders(int orderState)
+        {
+            List<OrderReporttWithOrderByStatusDateVM> filteredOrdersViewModel =
+                new List<OrderReporttWithOrderByStatusDateVM>();
+            List<Order> filteredOrders;
+            if (User.IsInRole("Trader"))
+            {
+
+                var username = User.Identity.Name;
+                var user = _userManager.FindByNameAsync(username).Result;
+                var TraderId = user.Id.ToString();
+
+                filteredOrders = _orderRepository.GetAll();
+                filteredOrders = filteredOrders.Where(o => o.TraderId == TraderId).ToList();
+            }
+            else
+            {
+                filteredOrders = _orderRepository.GetAll();
+            }
+            if (orderState == 0)
+            {
+            }
+            else
+            {
+                filteredOrders = filteredOrders.Where(o => o.OrderStateId == orderState).ToList();
+            }
+            foreach (var item in filteredOrders)
+            {
+
+                City city = _cityRepository.GetById((int)item.ClientCityId);
+                Governorate governorate = _governorateRepository.GetById((int)item.ClientGovernorateId);
+                // try in view 
+                OrderState orderS = _orderStateRepository.getById((int)item.OrderStateId);
+                Trader trader = _traderRepository.GetById(item.TraderId);
+
+                OrderReporttWithOrderByStatusDateVM ordersViewModelItem =
+                    new OrderReporttWithOrderByStatusDateVM();
+                ordersViewModelItem.Id = item.Id;
+                ordersViewModelItem.Date = item.creationDate;
+                ordersViewModelItem.Client = item.ClientName;
+                ordersViewModelItem.PhoneNumber = item.Phone1;
+                ordersViewModelItem.City = city.Name;
+                ordersViewModelItem.Governorate = governorate.Name;
+                ordersViewModelItem.ShippingPrice = (decimal)item.ShippingPrice;
+                // try in view
+                ordersViewModelItem.Status = orderS.Name;
+                ordersViewModelItem.Trader = trader.AppUser.Name;
+
+
+                filteredOrdersViewModel.Add(ordersViewModelItem);
+            }
+
+
+
+            return Json(filteredOrdersViewModel);
+        }
+
+
+
+        public IActionResult AddProduct(string name, int quantity, decimal weight, decimal price, string orderno)
+        {
+            var pro = new Product
+            {
+                OrderNO = orderno,
+                Name = name,
+                Quantity = quantity,
+                Weight = weight,
+                Price = price
+            };
+            _productRepository.Add(pro);
+            _productRepository.Save();
+
+            return Ok(pro.Id);
+        }
+
+
+        public IActionResult DeleteProduct(int id)
+        {
+            if (id == null)
+                return BadRequest();
+            var pro = _productRepository.GetById(id);
+            if (pro == null)
+                return NotFound();
+            _productRepository.Delete(id);
+            return Ok();
+        }
+
         public decimal? ProductsWeight(string orderNO)
         {
             var orderProducts = _productRepository.GetProducts().Where(p => p.OrderNO == orderNO);
@@ -241,6 +329,61 @@ namespace Final_Project.Controllers
                 cost += product.Price * product.Quantity;
             }
             return cost;
+        }
+
+        public IActionResult LinkOrderToRepresentative(string orderId, string repId)
+        {
+            var order = _orderRepository.GetById(int.Parse(orderId));
+
+            order.RepresentativeId = repId;
+
+            _orderRepository.Save();
+
+            return RedirectToAction("Index", "Order");
+        }                   
+        public IActionResult OrderReport(string startDate, string endDate, int statusId)
+        {
+            List<OrderReporttWithOrderByStatusDateVM> ordersViewModel = new List<OrderReporttWithOrderByStatusDateVM>();
+
+            var orders = _orderRepository.GetAll().ToList();
+
+            foreach (var item in orders)
+            {
+                OrderReporttWithOrderByStatusDateVM ordersViewModelItem = new OrderReporttWithOrderByStatusDateVM();
+                ordersViewModelItem.SerialNumber = item.Id;
+                ordersViewModelItem.StatusId = (int)item.OrderStateId;
+                ordersViewModelItem.Status = item.OrderState.Name;
+                ordersViewModelItem.Trader = item.Trader.AppUser.Name;
+                ordersViewModelItem.Client = item.ClientName;
+                ordersViewModelItem.PhoneNumber = item.Phone1;
+                ordersViewModelItem.Governorate = item.ClientGovernorate.Name;
+                ordersViewModelItem.City = item.ClientCity.Name;
+                ordersViewModelItem.OrderPrice = (decimal)item.OrderPrice;
+                ordersViewModelItem.OrderPriceRecieved = (decimal)item.OrderPriceRecieved;
+                ordersViewModelItem.ShippingPrice = (decimal)item.ShippingPrice;
+                ordersViewModelItem.ShippingPriceRecived = (decimal)item.ShippingPriceRecived;
+                ordersViewModelItem.CompanyRate = (decimal)(item.RepresentativeId == null ? 0 : (item.Representative.CompanyPercentageOfOrder * ordersViewModelItem.ShippingPrice) / 100M);
+                ordersViewModelItem.Date = item.creationDate;
+                ordersViewModel.Add(ordersViewModelItem);
+
+            }
+
+            if (statusId != 0)
+            {
+                ordersViewModel = ordersViewModel.Where(o => o.StatusId == statusId).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(startDate) && !string.IsNullOrEmpty(endDate))
+            {
+                DateTime start = DateTime.Parse(startDate);
+                DateTime end = DateTime.Parse(endDate).AddDays(1);
+                ordersViewModel = ordersViewModel.Where(o => o.Date >= start && o.Date < end).ToList();
+
+            }
+
+            ViewBag.status = _orderStateRepository.GetOrders();
+
+            return View(ordersViewModel);
         }
     }
 }
