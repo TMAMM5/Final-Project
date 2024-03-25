@@ -11,20 +11,20 @@ namespace Final_Project.ViewModel
         [MaxLength(50,
             ErrorMessage = "Name must be less than 50 characters")]
 
-        [MinLength(8,
-            ErrorMessage = "Name must be more than 8 characters")]
+        [MinLength(5,
+            ErrorMessage = "Minimum length is 5 character")]
         public string Name { get; set; }
 
         [DataType(DataType.EmailAddress)]
         [RegularExpression(@"^([0-9a-zA-Z]([\+\-_\.][0-9a-zA-Z]+)*)+@(([0-9a-zA-Z][-\w]*[0-9a-zA-Z]*\.)+[a-zA-Z0-9]{2,3})$",
-            ErrorMessage = "Email address is not in valid")]
+            ErrorMessage = "Email address is not valid")]
 
-        public string Email { get; set; }
+        public string? Email { get; set; }
 
         [DataType(DataType.Password)]
-        [RegularExpression(@"^.*(?=.{8,})(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!*@#$%^&+=]).*$",
-                    ErrorMessage = "Password must be 8 : 16 characters long</br> with at least one numeric character")]
-        public string Password { get; set; }
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{5}$", ErrorMessage = "Password Must Contain At Least one lowercase letter , one uppercase letter and one uppercase letter </br>" +
+            "With Minimum Length 5 Character")]
+        public string? Password { get; set; }
 
         public bool IsDeleted { get; set; } = false;
 
@@ -33,7 +33,7 @@ namespace Final_Project.ViewModel
         public string Phone { get; set; }
 
         [MinLength(5,
-            ErrorMessage = "Address must be more than 5 characters")]
+            ErrorMessage = "Minimum length for Address is 5 Characters")]
         [MaxLength(50,
             ErrorMessage = "Address must be less than 50 characters")]
         public string Address { get; set; }
