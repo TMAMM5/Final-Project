@@ -200,6 +200,8 @@ namespace Final_Project.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+
+
         [HttpPost]
         public async Task<IActionResult> Delete(string id)
         {
@@ -217,5 +219,38 @@ namespace Final_Project.Controllers
 
             return Ok(result);
         }
+        //public async Task<IActionResult> Delete(string id)
+        //{
+        //    if (id == null)
+        //        return BadRequest();
+
+        //    var user = await _userManager.FindByIdAsync(id);
+        //    if (user == null)
+        //        return NotFound();
+
+        //    return View(user);
+        //}
+
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> DeleteConfirmed(string id)
+        //{
+        //    if (id == null)
+        //        return BadRequest();
+
+        //    var user = await _userManager.FindByIdAsync(id);
+        //    if (user == null)
+        //        return NotFound();
+
+        //    var result = await _userManager.DeleteAsync(user);
+        //    if (!result.Succeeded)
+        //    {
+
+        //        return RedirectToAction(nameof(Index)); 
+        //    }
+
+        //    return RedirectToAction(nameof(Index)); 
+        //}
+
     }
 }
