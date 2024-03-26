@@ -20,9 +20,10 @@ namespace Final_Project.ViewModel
         public string Email { get; set; }
 
         [DataType(DataType.Password)]
-        [RegularExpression(@"^.*(?=.{8,})(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!*@#$%^&+=]).*$",
-                    ErrorMessage = "Password must be 8 : 16 characters long</br> with at least one numeric character")]
-        public string Password { get; set; }
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{5}$", ErrorMessage = "Password Must Contain At Least one lowercase letter , one uppercase letter and one uppercase letter </br>" +
+            "With Minimum Length 5 Character")]
+        
+        public string? Password { get; set; }
 
         public bool IsDeleted { get; set; } = false;
 
