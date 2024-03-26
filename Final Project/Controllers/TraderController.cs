@@ -40,10 +40,26 @@ namespace Final_Project.Controllers
             _orderStateRepository = orderStateRepository;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(int pg=1)
         {
+            //Start Pagination
             var trader = _traderRepository.GetAll();
-            return View(trader);
+            const int pageSize = 1;
+            if (pg < 1)
+                pg = 1;
+            int recsCount = trader.Count();
+            var pager =new Pager(recsCount,pg,pageSize);
+            int recSkip=(pg-1)*pageSize;
+            var data=trader.Skip(recSkip).Take(pager.PageSize).ToList();
+            pager.Controller="Trader";
+            pager.Action = "Index";
+            this.ViewBag.pager = pager;
+
+
+
+            //return View(trader);
+            return View(data);
+            // End Pagination
         }
 
         public async Task<IActionResult> Create()
