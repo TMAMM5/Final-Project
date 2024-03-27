@@ -40,32 +40,34 @@ namespace Final_Project.Controllers
                 Role = _userManager.GetRolesAsync(user).Result.FirstOrDefault(),
                 IsDeleted = user.IsDeleted
             }).ToList();
-
-            if (word == "#ALL#")
+            const int pageSize = 5;
+            if (pg < 1)
+                pg = 1;
+            int recsCount = users.Count();
+            var pager = new Pager(recsCount, pg, pageSize);
+            int recSkip = (pg - 1) * pageSize;
+            var data = users.Skip(recSkip).Take(pager.PageSize).ToList();
+            pager.Controller = "Employee";
+            pager.Action = "Index";
+            this.ViewBag.pager = pager;
+            if (word == "all")
             {
-                return View(users);
+             
+                return View(data);
             }
+           
             else if (string.IsNullOrEmpty(word))
             {
                 users = users.Where(u => u.IsDeleted == false).ToList();
-
-                return View(users);
+            
+                return View(data);
             }
             else
             {
                 users = users.Where(u => u.Name.ToLower().Contains(word.ToLower())).ToList();
             }
-            //const int pageSize = 5;
-            //if (pg < 1)
-            //    pg = 1;
-            //int recsCount = users.Count();
-            //var pager = new Pager(recsCount, pg, pageSize);
-            //int recSkip = (pg - 1) * pageSize;
-            //var data = users.Skip(recSkip).Take(pager.PageSize).ToList();
-            //pager.Controller = "Employee";
-            //pager.Action = "Index";
-            //this.ViewBag.pager = pager;
-            return View(users);
+         
+            return View(data);
         }
 
         public IActionResult Create()

@@ -26,10 +26,20 @@ namespace Final_Project.Controllers
             _discountTypeRepository = discountTypeRepository;
             _userManager = userManager;
         }
-        public IActionResult Index()
+        public IActionResult Index(int pg=1)
         {
             List<Representative> representatives = _represintativeRepository.GetAll();
-            return View(representatives);
+            const int pageSize = 5;
+            if (pg < 1)
+                pg = 1;
+            int recsCount = representatives.Count();
+            var pager = new Pager(recsCount, pg, pageSize);
+            int recSkip = (pg - 1) * pageSize;
+            var data = representatives.Skip(recSkip).Take(pager.PageSize).ToList();
+            pager.Controller = "Representative";
+            pager.Action = "Index";
+            this.ViewBag.pager = pager;
+            return View(data);
         }
 
         [HttpGet]

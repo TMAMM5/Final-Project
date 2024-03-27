@@ -1,6 +1,13 @@
 ﻿@model List<UserVM>
 @{
     ViewData["title"] = "Users";
+    Pager pager = new Pager();
+    int pageNo = 0;
+    if (ViewBag.Pager != null)
+    {
+        pager = ViewBag.Pager;
+        pageNo = pager.CurrentPage;
+    }
     var index = 1;
 }
 <style>
@@ -85,7 +92,8 @@
 
         <div>
             <a class="btn btn-primary" asp-action="Create">Add User</a>
-            <a class="btn btn-primary" asp-route-word="#ALL#" asp-action="Index">Get All</a>
+            <a class="btn btn-primary" asp-route-word="all" asp-action="Index">Get All</a>
+
         </div>
     </div>
 </div>
@@ -94,6 +102,8 @@
 <div class="card shadow mb-4 text-center">
     <div class="card-body">
         <div class="table-responsive">
+            <partial name="_Pager" model="@pager" />
+
             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                 <thead>
                     <tr>
@@ -133,6 +143,8 @@
                     }
                 </tbody>
             </table>
+            <partial name="_Pager" model="@pager" />
+
         </div>
     </div>
 </div>
