@@ -15,11 +15,20 @@ namespace Final_Project.Controllers
             this.cityRepository = cityRepository;
             this.governorateRepository = governorateRepository;
         }
-        public IActionResult Index()
+        public IActionResult Index(int pg = 1)
         {
             List<City> cityList = cityRepository.GetAll();
-
-            return View(cityList);
+            const int pageSize = 5;
+            if (pg < 1)
+                pg = 1;
+            int recsCount = cityList.Count();
+            var pager = new Pager(recsCount, pg, pageSize);
+            int recSkip = (pg - 1) * pageSize;
+            var data = cityList.Skip(recSkip).Take(pager.PageSize).ToList();
+            pager.Controller = "City";
+            pager.Action = "Index";
+            this.ViewBag.pager = pager;
+            return View(data);
         }
 
         public IActionResult Create(int id) 

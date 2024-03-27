@@ -18,7 +18,7 @@ namespace Final_Project.ViewModel
         [DataType(DataType.EmailAddress)]
         [RegularExpression(@"^([0-9a-zA-Z]([\+\-_\.][0-9a-zA-Z]+)*)+@(([0-9a-zA-Z][-\w]*[0-9a-zA-Z]*\.)+[a-zA-Z0-9]{2,3})$",
             ErrorMessage = "Email address is not valid")]
-
+        [Required(ErrorMessage ="Email Is Required")]
         public string? Email { get; set; }
 
         [DataType(DataType.Password)]

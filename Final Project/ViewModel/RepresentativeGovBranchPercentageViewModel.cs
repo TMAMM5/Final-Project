@@ -1,5 +1,6 @@
 ﻿using Final_Project.Models;
 using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
 
 namespace Final_Project.ViewModel
 {
@@ -20,10 +21,10 @@ namespace Final_Project.ViewModel
         public string Email { get; set; }
 
         [DataType(DataType.Password)]
-        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{5}$", ErrorMessage = "Password Must Contain At Least one lowercase letter , one uppercase letter and one uppercase letter </br>" +
-            "With Minimum Length 5 Character")]
-        
+        //[Required(ErrorMessage ="Password Is Required")]
+        [RegularExpression(@"^.{5,}$", ErrorMessage = "Password must be at least 5 characters long.")]
         public string? Password { get; set; }
+
 
         public bool IsDeleted { get; set; } = false;
 
@@ -38,6 +39,7 @@ namespace Final_Project.ViewModel
         public string Address { get; set; }
 
         [Display(Name = "Company Percentage Of Order")]
+        [Required(ErrorMessage ="Please Put The Percentage")]
         public decimal CompanyPercentageOfOrder { get; set; }
 
         [Display(Name = "Governorate")]
@@ -45,17 +47,18 @@ namespace Final_Project.ViewModel
         [Required(
             ErrorMessage = "Please choose governorate")]
         public int GovernorateId { get; set; }
-        public List<Governorate>? Governorates { get; set; } //for drop down list
+        public List<Governorate>? Governorates { get; set; } 
 
         [Display(Name = "Branch")]
         [Required(
             ErrorMessage = "Please choose branch")]
         public int BranchId { get; set; }
-        public List<Branch>? Branchs { get; set; } //for drop down list
+        public List<Branch>? Branchs { get; set; }
 
         [Display(Name = "Discount Type")]
+        [Required(ErrorMessage = "Please choose Discount Type")]
         public int DiscountTypeId { get; set; }
-        public List<DiscountType>? DiscountTypes { get; set; } //for drop down list
+        public List<DiscountType>? DiscountTypes { get; set; }
     }
 }
 

@@ -26,7 +26,7 @@ namespace Final_Project.Controllers
             _signInManager = signInManager;
             _branchRepository = branchRepository;
         }
-        public async Task<IActionResult> Index(string word)
+        public async Task<IActionResult> Index(string word , int pg=1)
         {
             var userDB = await _userManager.Users.ToListAsync();
             var users = userDB.Select(user => new UserVM
@@ -55,6 +55,16 @@ namespace Final_Project.Controllers
             {
                 users = users.Where(u => u.Name.ToLower().Contains(word.ToLower())).ToList();
             }
+            //const int pageSize = 5;
+            //if (pg < 1)
+            //    pg = 1;
+            //int recsCount = users.Count();
+            //var pager = new Pager(recsCount, pg, pageSize);
+            //int recSkip = (pg - 1) * pageSize;
+            //var data = users.Skip(recSkip).Take(pager.PageSize).ToList();
+            //pager.Controller = "Employee";
+            //pager.Action = "Index";
+            //this.ViewBag.pager = pager;
             return View(users);
         }
 
@@ -72,6 +82,8 @@ namespace Final_Project.Controllers
                 Roles = roles,
                 Branches = _branchRepository.GetAll()
             };
+       
+
             return View(user);
         }
         [HttpPost]

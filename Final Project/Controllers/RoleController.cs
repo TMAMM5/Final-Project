@@ -16,9 +16,9 @@ namespace Final_Project.Controllers
             _userManager = userManager;
             
         }
-        public IActionResult Index(string word)
+        public IActionResult Index(string word , int pg=1)
         {
-            List<IdentityRole> roles;
+            List<IdentityRole> roles;    
             if (string.IsNullOrEmpty(word))
             {
                 roles = _roleManager.Roles.ToList();
@@ -34,7 +34,17 @@ namespace Final_Project.Controllers
                 roles.Remove(superAdminRole);
                 roles.Insert(0, superAdminRole);
             }
-            return View(roles);
+            const int pageSize = 5;
+            if (pg < 1)
+                pg = 1;
+            int recsCount = roles.Count();
+            var pager = new Pager(recsCount, pg, pageSize);
+            int recSkip = (pg - 1) * pageSize;
+            var data = roles.Skip(recSkip).Take(pager.PageSize).ToList();
+            pager.Controller = "Role";
+            pager.Action = "Index";
+            this.ViewBag.pager = pager;
+            return View(data);
         }
 
    

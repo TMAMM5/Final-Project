@@ -14,10 +14,20 @@ namespace Final_Project.Controllers
         }
 
 
-        public IActionResult Index()
+        public IActionResult Index(int pg = 1)
         {
             List<Branch> branchs = branchRepository.GetAll();
-            return View(branchs);
+            const int pageSize = 5;
+            if (pg < 1)
+                pg = 1;
+            int recsCount = branchs.Count();
+            var pager = new Pager(recsCount, pg, pageSize);
+            int recSkip = (pg - 1) * pageSize;
+            var data = branchs.Skip(recSkip).Take(pager.PageSize).ToList();
+            pager.Controller = "Branch";
+            pager.Action = "Index";
+            this.ViewBag.pager = pager;
+            return View(data);
         }
 
         public IActionResult Create()

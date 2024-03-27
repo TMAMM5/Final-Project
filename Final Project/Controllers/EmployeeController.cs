@@ -34,7 +34,7 @@ namespace Final_Project.Controllers
         }
 
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int pg=1)
         {
             var usersFromDb = await _userManager.Users.ToListAsync();
             var users = usersFromDb
@@ -51,7 +51,22 @@ namespace Final_Project.Controllers
                     IsDeleted = user.IsDeleted
                 })
                 .ToList();
-            return View(users);
+
+
+            const int pageSize = 5;
+            if (pg < 1)
+                pg = 1;
+            int recsCount = users.Count();
+            var pager = new Pager(recsCount, pg, pageSize);
+            int recSkip = (pg - 1) * pageSize;
+            var data = users.Skip(recSkip).Take(pager.PageSize).ToList();
+            pager.Controller = "Employee";
+            pager.Action = "Index";
+            this.ViewBag.pager = pager;
+
+
+
+            return View(data);
         }
         public IActionResult Create()
         {

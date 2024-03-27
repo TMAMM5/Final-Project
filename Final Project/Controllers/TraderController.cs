@@ -42,9 +42,9 @@ namespace Final_Project.Controllers
 
         public IActionResult Index(int pg=1)
         {
-            //Start Pagination
+            
             var trader = _traderRepository.GetAll();
-            const int pageSize = 1;
+            const int pageSize = 5;
             if (pg < 1)
                 pg = 1;
             int recsCount = trader.Count();
@@ -54,12 +54,7 @@ namespace Final_Project.Controllers
             pager.Controller="Trader";
             pager.Action = "Index";
             this.ViewBag.pager = pager;
-
-
-
-            //return View(trader);
-            return View(data);
-            // End Pagination
+            return View(data);     
         }
 
         public async Task<IActionResult> Create()

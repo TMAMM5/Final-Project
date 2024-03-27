@@ -14,10 +14,20 @@ namespace Final_Project.Controllers
             _governorateRepository = governorateRepository;
             _cityRepository = cityRepository;
         }
-        public IActionResult Index()
+        public IActionResult Index(int pg=1)
         {
             List<Governorate> governorates = _governorateRepository.GetAll();
-            return View(governorates);
+            const int pageSize = 5;
+            if (pg < 1)
+                pg = 1;
+            int recsCount = governorates.Count();
+            var pager = new Pager(recsCount, pg, pageSize);
+            int recSkip = (pg - 1) * pageSize;
+            var data = governorates.Skip(recSkip).Take(pager.PageSize).ToList();
+            pager.Controller = "Governorate";
+            pager.Action = "Index";
+            this.ViewBag.pager = pager;
+            return View(data);
         }
 
         [HttpGet]

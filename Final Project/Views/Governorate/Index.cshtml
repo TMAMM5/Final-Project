@@ -2,6 +2,13 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
+    Pager pager = new Pager();
+    int pageNo = 0;
+    if (ViewBag.Pager != null)
+    {
+        pager = ViewBag.Pager;
+        pageNo = pager.CurrentPage;
+    }
     int i = 0;
 }
 @model List<Governorate>
@@ -91,6 +98,7 @@
 <div class="card shadow mb-4 text-center">
     <div class="card-body">
         <div class="table-responsive">
+            <partial name="_Pager" model="@pager" />
 
 <table class="table table-bordered">
     <thead>
@@ -124,6 +132,8 @@
        
     </tbody>
 </table>
+            <partial name="_Pager" model="@pager" />
+
 </div>
 </div>
 </div>

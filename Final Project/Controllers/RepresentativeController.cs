@@ -58,8 +58,8 @@ namespace Final_Project.Controllers
                 ModelState.AddModelError("Email", "Email already exist");
                 return View(representativeVM);
             }
-            var user = new ApplicationUser()
-            {
+            var user = new ApplicationUser
+            {               
                 Email = representativeVM.Email,
                 UserName = representativeVM.Email,
                 Name = representativeVM.Name,
@@ -152,7 +152,7 @@ namespace Final_Project.Controllers
             user.Email = model.Email;
             user.UserName = model.Email;
             user.Address = model.Address;
-            user.BranchId = model.BranchId;
+            user.BranchId = (int)model.BranchId;
             var result = await _userManager.UpdateAsync(user);
             if (!result.Succeeded)
             {
