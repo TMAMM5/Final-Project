@@ -14,8 +14,11 @@ namespace Final_Project.Controllers
             _governorateRepository = governorateRepository;
             _cityRepository = cityRepository;
         }
-        public IActionResult Index(int pg=1)
+        public IActionResult Index(string childname, int pg=1)
         {
+            if (String.IsNullOrEmpty(childname))
+            {
+
             List<Governorate> governorates = _governorateRepository.GetAll();
             const int pageSize = 5;
             if (pg < 1)
@@ -28,6 +31,12 @@ namespace Final_Project.Controllers
             pager.Action = "Index";
             this.ViewBag.pager = pager;
             return View(data);
+            }
+            else
+            {
+                var searchItems = _governorateRepository.GetAll().Where(s => s.Name.Contains(childname)).ToList();
+                return View(searchItems);
+            }
         }
 
         [HttpGet]
