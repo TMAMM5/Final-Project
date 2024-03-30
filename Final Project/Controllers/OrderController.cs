@@ -207,7 +207,7 @@ namespace Final_Project.Controllers
             ViewData["PaymentMethods"] = _paymentMethodRepository.GetAll();
             ViewData["Branches"] = _branchRepository.GetAll();
             ViewData["Governorates"] = _governorateRepository.GetAll();
-
+            ViewData["City"] = _cityRepository.GetAll().Where(c => c.GoverId == order.ClientGovernorateId).ToList();
             return View(order);
         }
         public IActionResult Delete(int id)
@@ -331,31 +331,31 @@ namespace Final_Project.Controllers
             return cost;
         }
 
-        //public async Task<IActionResult> Status(int id)
-        //{
-        //    Order order = _orderRepository.GetById(id);
+        public async Task<IActionResult> Status(int id)
+        {
+            Order order = _orderRepository.GetById(id);
 
-        //    var representativesInSameCity = RepresintativeRepository.GetByBranch(order.BranchId);
+            var representativesInSameCity = _represintativeRepository.GetByBranch((int)order.BranchId);
 
-        //    List<RepresentativeGovBranchPercentageViewModel> viewmodels = new List<RepresentativeGovBranchPercentageViewModel>();
+            List<RepresentativeGovBranchPercentageViewModel> viewmodels = new List<RepresentativeGovBranchPercentageViewModel>();
 
-        //    foreach (var item in representativesInSameCity)
-        //    {
-        //        var user = await _userManager.FindByIdAsync(item.AppUserId);
+            foreach (var item in representativesInSameCity)
+            {
+                var user = await _userManager.FindByIdAsync(item.AppUserId);
 
-        //        RepresentativeGovBranchPercentageViewModel viewmodel = new RepresentativeGovBranchPercentageViewModel()
-        //        {
-        //            AppUserId = user.Id,
-        //            Name = user.Name,
-        //        };
-        //        viewmodels.Add(viewmodel);
-        //    }
+                RepresentativeGovBranchPercentageViewModel viewmodel = new RepresentativeGovBranchPercentageViewModel()
+                {
+                    AppUserId = user.Id,
+                    Name = user.Name,
+                };
+                viewmodels.Add(viewmodel);
+            }
 
 
-        //    ViewData["OrderStatus"] = _orderStateRepository.GetForEmp();
-        //    ViewData["RepresentativesInSameCity"] = viewmodels;
-        //    return View(order);
-        //}
+            ViewData["OrderStatus"] = _orderStateRepository.GetForEmp();
+            ViewData["RepresentativesInSameCity"] = viewmodels;
+            return View(order);
+        }
 
 
         [HttpPost]

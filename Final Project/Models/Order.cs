@@ -44,7 +44,7 @@ namespace Final_Project.Models
         [Display(Name = "Deliver To Village ?")]
         public bool DeliverToVillage { get; set; }
 
-        [Required(ErrorMessage ="Invalid Village Or Street")]
+        //[Required(ErrorMessage ="Invalid Village Or Street")]
         [Display(Name ="Village & Street")]
         public string? Village_Street { get; set; }
 

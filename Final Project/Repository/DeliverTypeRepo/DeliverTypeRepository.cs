@@ -8,7 +8,7 @@ namespace Final_Project.Repository.DeliverTypeRepo
         ProjContext context;
         public DeliverTypeRepository(ProjContext context)
         {
-            context = context;
+            this.context = context;
         }
 
         public List<DeliverType> GetAll()
