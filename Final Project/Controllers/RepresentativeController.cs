@@ -3,10 +3,13 @@ using Final_Project.Needs;
 using Final_Project.Repository.BranchRepo;
 using Final_Project.Repository.DiscountTypeRepo;
 using Final_Project.Repository.GovernorateRepo;
+using Final_Project.Repository.OrderRepo;
+using Final_Project.Repository.OrderStateRepo;
 using Final_Project.Repository.RepresintativeRepo;
 using Final_Project.ViewModel;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Final_Project.Controllers
 {
@@ -17,14 +20,18 @@ namespace Final_Project.Controllers
         private readonly IBranchRepository _branchRepository;
         private readonly IDiscountTypeRepository _discountTypeRepository;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IOrderRepository _orderRepository;
+        private readonly IOrderStateRepository _orderStateRepository;
 
-        public RepresentativeController(IRepresintativeRepository represintativeRepository, IGovernorateRepository governorateRepository, IBranchRepository branchRepository, IDiscountTypeRepository discountTypeRepository, UserManager<ApplicationUser> userManager)
+        public RepresentativeController(IRepresintativeRepository represintativeRepository, IGovernorateRepository governorateRepository, IBranchRepository branchRepository, IDiscountTypeRepository discountTypeRepository, UserManager<ApplicationUser> userManager, IOrderRepository orderRepository,IOrderStateRepository orderStateRepository)
         {
             _represintativeRepository = represintativeRepository;
             _governorateRepository = governorateRepository;
             _branchRepository = branchRepository;
             _discountTypeRepository = discountTypeRepository;
             _userManager = userManager;
+            _orderRepository = orderRepository;
+            _orderStateRepository = orderStateRepository;
         }
         public IActionResult Index(int pg=1)
         {
@@ -41,6 +48,21 @@ namespace Final_Project.Controllers
             this.ViewBag.pager = pager;
             return View(data);
         }
+
+
+
+        public IActionResult Home()
+        {
+            var username = User.Identity.Name;
+            var user = _userManager.FindByEmailAsync(username).Result;
+            var RepresentativeId = user.Id.ToString();
+            List<Order> orders = _orderRepository.GetByRepresentativeId(RepresentativeId);
+            return View(orders);
+        }
+
+
+
+
 
         [HttpGet]
         public async Task<IActionResult> Create()
@@ -197,5 +219,72 @@ namespace Final_Project.Controllers
             _represintativeRepository.Save();
             return Ok();
         }
+
+        public ActionResult ChangeStatus(int orderId, int statusId)
+        {
+            if (orderId == null || statusId == null)
+                return BadRequest();
+            var order = _orderRepository.GetById(orderId);
+            if (order == null)
+                return NotFound();
+            order.OrderStateId = statusId;
+            _orderRepository.Save();
+            order = _orderRepository.GetById(orderId);
+            return Ok(order.OrderState.Name);
+        }
+
+
+        [HttpGet]
+        public  IActionResult ChangeOrderStatus(int id)
+        {
+         
+            Order order = _orderRepository.GetById(id);
+            if (order == null)
+            {
+                return NotFound();
+            }
+            List<OrderState> orderStates = _orderStateRepository.GetOrders();
+            OrderWithOrderStateVM orderWithOrderStateVM = new OrderWithOrderStateVM
+            {
+                OrderID = order.Id,
+                OrderStateId = order.OrderStateId
+            };
+            ViewBag.OrderState = orderStates;
+            return View(orderWithOrderStateVM);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult ChangeOrderStatus(OrderWithOrderStateVM orderVM)
+        {
+            if (ModelState.IsValid)
+            {
+                // Assuming _orderRepository is your data repository for orders
+                // and it has a method for updating an order
+                Order existingOrder = _orderRepository.GetById(orderVM.OrderID);
+                if (existingOrder == null)
+                {
+                    return NotFound();
+                }
+
+                // Update the order's state with the new value
+                existingOrder.OrderStateId = orderVM.OrderStateId;
+
+                _orderRepository.Update(existingOrder); // Update the order in the repository
+                _orderRepository.Save(); // Save the changes to the database
+
+                // Redirect to a confirmation page or back to the list/index
+                return RedirectToAction("Home");
+            }
+
+            // If we get here, there was a problem with the data
+            // Reload the orderStates in case we need to redisplay the form
+            List<OrderState> orderStates = _orderStateRepository.GetOrders();
+            ViewBag.OrderState = orderStates;
+            return View(orderVM);
+        }
+
+
+
     }
 }

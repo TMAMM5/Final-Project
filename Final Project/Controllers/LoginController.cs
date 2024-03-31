@@ -36,7 +36,19 @@ namespace Final_Project.Controllers
                     if(found)
                     {
                         await _signInManager.SignInAsync(user, isPersistent: cred.IsPresistent);
+                        if (await _userManager.IsInRoleAsync(user, "Trader"))
+                        {
+                            return RedirectToAction("Home", "Trader"); // Redirect to Admin controller's Index action
+                        }
+                        else if (await _userManager.IsInRoleAsync(user,"Representative"))
+                        {
+                            return RedirectToAction("Home", "Representative");
+                        }
+                        else
+                        {
+                            // Handle case for users with no roles or different roles
                         return RedirectToAction("Index", "Home");
+                        }
                     }
                 }
                 ModelState.AddModelError("", "Invalid Email or password");

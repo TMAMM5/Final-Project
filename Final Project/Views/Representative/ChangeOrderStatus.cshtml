@@ -1,0 +1,42 @@
+﻿@model OrderWithOrderStateVM
+@{
+    ViewData["Title"] = "ChangeOrderStatus";
+    SelectList orderStates = new SelectList(ViewBag.OrderState, "Id", "Name");
+}
+
+<h1>Change Order Status</h1>
+
+<hr />
+
+
+
+<div class="row">
+    <div class="col-md-12">
+        <form asp-action="ChangeOrderStatus">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input asp-for="OrderID" hidden />
+                <div class="form-group mb-2 col-md-4">
+                <label asp-for="OrderStateId" class="control-label"></label>
+                <select asp-for="OrderStateId" asp-items="orderStates" class="form-control">
+                        <option value="">--Select Discount Type--</option>
+                    </select>
+                <span asp-validation-for="OrderStateId" class="text-danger"></span>
+              
+
+            </div>
+            <div class="form-group col-md-12 mt-4">
+                <button type="submit" value="Edit" class="btn btn-primary">Edit</button>
+                <a class="btn btn-secondary" asp-action="Home">Cancel</a>
+            </div>
+        </form>
+    </div>
+    </div>
+
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
