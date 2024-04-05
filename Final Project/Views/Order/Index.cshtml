@@ -2,6 +2,17 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
+    @inject IAuthorizationService AuthorizationService
+    Pager pager = new Pager();
+    int pageNo = 0;
+    if (ViewBag.Pager != null)
+    {
+        pager = ViewBag.Pager;
+        pageNo = pager.CurrentPage;
+    }
+
+    int index = 1;
+
 }
 @model List<OrderReporttWithOrderByStatusDateVM>
 
@@ -13,7 +24,8 @@
             <h6 class="mt-2"><i class="fa-solid fa-house"></i> > <a asp-action="Index" class="text-decoration-none">Orders</a></h6>
         </div>
 
-        @if (User.IsInRole("Trader"))
+        @if (AuthorizationService.AuthorizeAsync(User, Permissions.Orders.Create).Result.Succeeded)
+
         {
             <p>
                 <a class="btn btn-dark" asp-controller="Order" asp-action="Create">Add Order</a>
@@ -57,19 +69,22 @@
                         <th>City</th>
                         <th>shipping Cost</th>
                         @if (User.IsInRole(Roles.Trader.ToString()))
+
                         {
                             <th>Edit Order</th>
                         }
                         @if (!User.IsInRole(Roles.Trader.ToString()))
+
+
                         {
                             <th>Edit Status</th>
                         }
-                       @*  @if (AuthorizationService.AuthorizeAsync(User, Permissions.Orderes.Delete).Result.Succeeded)
+                        @if (AuthorizationService.AuthorizeAsync(User, Permissions.Orders.Delete).Result.Succeeded)
                         {
                             <th>Delete</th>
-                        } *@
-                        <th>Delete</th>
-                        <th><i class="fa-solid fa-print"></i></th>
+                        }
+                        
+                       
                     </tr>
                 </thead>
                 <tbody id="tableData">
@@ -92,6 +107,8 @@
                             <td>@item.City</td>
                             <td>@item.ShippingPrice</td>
                             @if (User.IsInRole(Roles.Trader.ToString()))
+
+
                             {
 
                                 @if (item.Status == "New")
@@ -107,29 +124,35 @@
                                 }
                             }
                             @if (!User.IsInRole(Roles.Trader.ToString()))
+
+
                             {
                                 <td>
                                     <a asp-route-id="@item.Id" asp-action="Status" class="btn btn-primary">Status</a>
                                 </td>
                             }
-                          @*   @if (AuthorizationService.AuthorizeAsync(User, Permissions.Orderes.Delete).Result.Succeeded)
+                            @*   @if (AuthorizationService.AuthorizeAsync(User, Permissions.Orderes.Delete).Result.Succeeded)
                             {
                                 <td>
                                     <a class="btn btn-danger" onclick="Remove(@item.Id)"><i class="fa-solid fa-trash"></i></a>
                                 </td>
                             }
                              *@
-                            <td>
-                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
-                                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z" />
-                                        <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z" />
-                                    </svg>
-                                </a>
-                            </td>
-                            <td>
-                                <a class="btn btn-info text-white"><i class="fa-solid fa-print"></i></a>
-                            </td>
+                            @if (AuthorizationService.AuthorizeAsync(User, Permissions.Orders.Delete).Result.Succeeded)
+                            {
+
+                                <td>
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z" />
+                                            <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z" />
+                                        </svg>
+                                    </a>
+                                </td>
+                            }
+                          @*   <td>
+                                <a asp-action="Invoice" asp-controller="Order" class="btn btn-info text-white"><i class="fa-solid fa-print"></i></a>
+                            </td> *@
                         </tr>
                     }
                 </tbody>
@@ -184,7 +207,8 @@
                                     </td>
         }
 
-        @if (User.IsInRole(Roles.Trader.ToString()))
+        @if (AuthorizationService.AuthorizeAsync(User, Permissions.Orders.Delete).Result.Succeeded)
+
         {
                                     <td>
                                                     <a class="btn btn-danger" onclick="Remove(${i.id})"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">

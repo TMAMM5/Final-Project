@@ -44,10 +44,14 @@ namespace Final_Project.Controllers
                         {
                             return RedirectToAction("Home", "Representative");
                         }
+                        else if(await _userManager.IsInRoleAsync(user,"SuperAdmin"))
+                        {
+                            
+                        return RedirectToAction("Home", "Employee");
+                        }
                         else
                         {
-                            // Handle case for users with no roles or different roles
-                        return RedirectToAction("Index", "Home");
+                            return RedirectToAction("Index", "Home");
                         }
                     }
                 }

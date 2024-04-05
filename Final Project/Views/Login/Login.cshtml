@@ -2,63 +2,290 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
+    
 }
 @model LoginVM
 
-<h1 class="d-flex justify-content-center mt-4">Login</h1>
-<hr />
-<div class="row d-flex justify-content-center">
-    <div class="col-md-4">
-        <form asp-action="Login" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Password" class="control-label"></label>
-                <div class="input-group">
-                    <input asp-for="Password" type="password" class="form-control" id="password-field" />
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-secondary" type="button" id="toggle-password">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
-                                <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z" />
-                                <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0" />
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsPresistent" /> Remember Me
-                </label>
-            </div>
-            <div class="form-group d-flex justify-content-between">
-                <input type="submit" value="Log In" class="btn btn-outline-success col-6" />
-            </div>
-        </form>
-    </div>
+
+
+<style>
+	body {
+		margin: 0;
+		color: #6a6f8c;
+		background: #c8c8c8;
+		font: 600 16px/18px 'Open Sans',sans-serif;
+	}
+
+	.mine{
+		border-radius:15px;
+	}
+	*, :after, :before {
+		box-sizing: border-box
+	}
+
+	.clearfix:after, .clearfix:before {
+		content: '';
+		display: table
+	}
+
+	.clearfix:after {
+		clear: both;
+		display: block
+	}
+
+	a {
+		color: inherit;
+		text-decoration: none
+	}
+
+	.login-wrap {
+		width: 100%;
+		margin: auto;
+		max-width: 525px;
+		min-height: 670px;
+		position: relative;
+		background: url(https://raw.githubusercontent.com/khadkamhn/day-01-login-form/master/img/bg.jpg) no-repeat center ;
+		border-radius-25px;
+		box-shadow: 0 12px 15px 0 rgba(0,0,0,.24),0 17px 50px 0 rgba(0,0,0,.19);
+	}
+
+	.login-html {
+		width: 100%;
+		height: 100%;
+		position: absolute;
+		padding: 90px 70px 50px 70px;
+		background: rgba(40,57,101,.9);
+	}
+
+		.login-html .sign-in-htm,
+		.login-html .sign-up-htm {
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			position: absolute;
+			transform: rotateY(180deg);
+			backface-visibility: hidden;
+			transition: all .4s linear;
+		}
+
+		.login-html .sign-in,
+		.login-html .sign-up,
+		.login-form .group .check {
+			display: none;
+		}
+
+		.login-html .tab,
+		.login-form .group .label,
+		.login-form .group .button {
+			text-transform: uppercase;
+		}
+
+		.login-html .tab {
+			font-size: 22px;
+			margin-right: 15px;
+			padding-bottom: 5px;
+			margin: 0 15px 10px 0;
+			display: inline-block;
+			border-bottom: 2px solid transparent;
+		}
+
+		.login-html .sign-in:checked + .tab,
+		.login-html .sign-up:checked + .tab {
+			color: #fff;
+			border-color: #1161ee;
+		}
+
+	.login-form {
+		min-height: 345px;
+		position: relative;
+		perspective: 1000px;
+		transform-style: preserve-3d;
+	}
+
+		.login-form .group {
+			margin-bottom: 15px;
+		}
+
+			.login-form .group .label,
+			.login-form .group .input,
+			.login-form .group .button {
+				width: 100%;
+				color: #fff;
+				display: block;
+			}
+
+			.login-form .group .input,
+			.login-form .group .button {
+				border: none;
+				padding: 15px 20px;
+				border-radius: 25px;
+				background: rgba(255,255,255,.1);
+			}
+
+			.login-form .group input[data-type="password"] {
+				text-security: circle;
+				-webkit-text-security: circle;
+			}
+
+			.login-form .group .label {
+				color: #aaa;
+				font-size: 12px;
+			}
+
+			.login-form .group .button {
+				background: #1161ee;
+			}
+
+			.login-form .group label .icon {
+				width: 15px;
+				height: 15px;
+				border-radius: 2px;
+				position: relative;
+				display: inline-block;
+				background: rgba(255,255,255,.1);
+			}
+
+				.login-form .group label .icon:before,
+				.login-form .group label .icon:after {
+					content: '';
+					width: 10px;
+					height: 2px;
+					background: #fff;
+					position: absolute;
+					transition: all .2s ease-in-out 0s;
+				}
+
+				.login-form .group label .icon:before {
+					left: 3px;
+					width: 5px;
+					bottom: 6px;
+					transform: scale(0) rotate(0);
+				}
+
+				.login-form .group label .icon:after {
+					top: 6px;
+					right: 0;
+					transform: scale(0) rotate(0);
+				}
+
+			.login-form .group .check:checked + label {
+				color: #fff;
+			}
+
+				.login-form .group .check:checked + label .icon {
+					background: #1161ee;
+				}
+
+					.login-form .group .check:checked + label .icon:before {
+						transform: scale(1) rotate(45deg);
+					}
+
+					.login-form .group .check:checked + label .icon:after {
+						transform: scale(1) rotate(-45deg);
+					}
+
+	.login-html .sign-in:checked + .tab + .sign-up + .tab + .login-form .sign-in-htm {
+		transform: rotate(0);
+	}
+
+	.login-html .sign-up:checked + .tab + .login-form .sign-up-htm {
+		transform: rotate(0);
+	}
+
+	.hr {
+		height: 2px;
+		margin: 60px 0 50px 0;
+		background: rgba(255,255,255,.2);
+	}
+
+	.foot-lnk {
+		text-align: center;
+	}
+</style>
+
+
+
+<div class="login-wrap mine">
+	<div class="login-html mine">
+		<input id="tab-1" type="radio" name="tab" class="sign-in" checked><label for="tab-1" class="tab">Sign In</label>
+		<input id="tab-2" type="radio" name="tab" class="sign-up"><label for="tab-2" class="tab"></label>
+		<div class="login-form">
+			<form asp-action="Login" method="post" class="sign-in-htm">
+				<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+				<div class="group">
+					<label asp-for="Email" class="label">Email</label>
+					<input asp-for="Email" type="text" class="input">
+					<span asp-validation-for="Email" class="text-danger"></span>
+
+				</div>
+				<div class="group">
+					<label asp-for="Password" class="label">Password</label>
+					<input asp-for="Password" type="password" class="input" data-type="password">
+					<span asp-validation-for="Password" class="text-danger"></span>
+
+				</div>
+				<div class="group">
+					<input asp-for="IsPresistent" id="IsPresistent" type="checkbox" name="IsPresistent" class="check">
+
+					<label for="IsPresistent"><span class="icon"></span> Remember Me</label>
+				</div>
+				<div class="group">
+					<input type="submit" class="button" value="Sign In">
+				</div>
+				<div class="hr"></div>
+				<div class="foot-lnk">
+					<a href="#forgot">Forgot Password?</a>
+				</div>
+			</form>
+			
+		</div>
+	</div>
 </div>
 
+
+
+
 @section Scripts {
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    @* <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script> *@
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
     <script>
         $(document).ready(function () {
-            $("#toggle-password").click(function () {
-                var passwordField = $("#password-field");
-                var icon = $(this).find("i");
-
-                // Toggle password visibility
-                if (passwordField.attr("type") === "password") {
-                    passwordField.attr("type", "text");
-                    icon.removeClass("fa-eye").addClass("fa-eye-slash");
-                } else {
-                    passwordField.attr("type", "password");
-                    icon.removeClass("fa-eye-slash").addClass("fa-eye");
-                }
+            $('.toggle-password-btn').click(function () {
+                var input = $('#Password');
+                input.attr('type') === 'password' ? input.attr('type', 'text') : input.attr('type', 'password');
             });
         });
     </script>
+  
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

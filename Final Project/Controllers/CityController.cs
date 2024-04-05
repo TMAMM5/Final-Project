@@ -1,4 +1,5 @@
 ﻿using Final_Project.Models;
+using Final_Project.Needs;
 using Final_Project.Repository.CityRepo;
 using Final_Project.Repository.GovernorateRepo;
 using Microsoft.AspNetCore.Authorization;
@@ -15,6 +16,8 @@ namespace Final_Project.Controllers
             this.cityRepository = cityRepository;
             this.governorateRepository = governorateRepository;
         }
+        [Authorize(Permissions.City.View)]
+
         public IActionResult Index(int pg = 1)
         {
             List<City> cityList = cityRepository.GetAll();
@@ -30,13 +33,17 @@ namespace Final_Project.Controllers
             this.ViewBag.pager = pager;
             return View(data);
         }
+        [Authorize(Permissions.City.Create)]
 
         public IActionResult Create(int id) 
         {
             ViewData["Governrates"]= governorateRepository.GetAll();
             return View();
         }
+        [Authorize(Permissions.City.Create)]
+
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Create(City city)
         {
             if(ModelState.IsValid)
@@ -48,13 +55,17 @@ namespace Final_Project.Controllers
                 ViewData["Governrates"] = governorateRepository.GetAll();
                 return View(city);     
         }
+        [Authorize(Permissions.City.Edit)]
+
         public IActionResult Edit(int id)
         {
             City city = cityRepository.GetById(id);
             ViewData["Governrates"] = governorateRepository.GetAll();
             return View(city) ;
         }
+        [Authorize(Permissions.City.Edit)]
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(City city)
         {
             if (ModelState.IsValid)
@@ -73,6 +84,8 @@ namespace Final_Project.Controllers
                 ViewData["Governrates"] = governorateRepository.GetAll();
                 return View(city);   
         }
+        [Authorize(Permissions.City.Delete)]
+
         public IActionResult ChangeState(int id)
         {
             City city = cityRepository.GetById(id);

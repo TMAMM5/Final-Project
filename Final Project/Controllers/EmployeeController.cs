@@ -1,8 +1,10 @@
 ﻿using Final_Project.Models;
+using Final_Project.Needs;
 using Final_Project.Repository.BranchRepo;
 using Final_Project.Repository.OrderRepo;
 using Final_Project.Repository.OrderStateRepo;
 using Final_Project.ViewModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -33,12 +35,13 @@ namespace Final_Project.Controllers
             _orderStateRepository = orderStateRepository;
         }
 
+        [Authorize(Permissions.Users.View)]
 
         public async Task<IActionResult> Index(int pg=1)
         {
             var usersFromDb = await _userManager.Users.ToListAsync();
             var users = usersFromDb
-                .Where(u => !_userManager.IsInRoleAsync(u, "Representative").Result && !_userManager.IsInRoleAsync(u, "Trader").Result)
+                .Where(u => !_userManager.IsInRoleAsync(u, "Representative").Result && !_userManager.IsInRoleAsync(u, "Trader").Result && !_userManager.IsInRoleAsync(u,Roles.SuperAdmin.ToString()).Result)
                 .Select(user => new UserVM
                 {
                     Id = user.Id,
@@ -68,6 +71,8 @@ namespace Final_Project.Controllers
 
             return View(data);
         }
+        [Authorize(Permissions.Users.Create)]
+
         public IActionResult Create()
         {
             var roles = _roleManager.Roles.Where(r=>r.Name !="Representative" &&r.Name !="Trader").Select(r=>new RoleVM
@@ -82,6 +87,8 @@ namespace Final_Project.Controllers
             };
             return View(user);
         }
+        [Authorize(Permissions.Users.Create)]
+
         [HttpPost]
         [ValidateAntiForgeryToken]
 
@@ -104,15 +111,17 @@ namespace Final_Project.Controllers
                 ModelState.AddModelError("Email", "This Email Is Already Taken");
                 return View(userForm);
             }
-            var user = new ApplicationUser
-            {
-                Name = userForm.Name,
-                Email = userForm.Email,
-                UserName = userForm.Name,
-                PhoneNumber = userForm.PhoneNumber,
-                Address = userForm.Address,
-                BranchId = userForm.BranchId,
-            };
+            var user = new ApplicationUser();
+
+            user.Name = userForm.Name;
+            user.Email = userForm.Email;
+            user.UserName = userForm.Name;
+            user.PhoneNumber = userForm.PhoneNumber;
+            user.Address = userForm.Address;
+            user.BranchId = userForm.BranchId;
+               
+                
+      
             var result = await _userManager.CreateAsync(user, userForm.Password);
             if (!result.Succeeded)
             {
@@ -128,6 +137,7 @@ namespace Final_Project.Controllers
             return RedirectToAction("Index");
 
         }
+        [Authorize(Permissions.Users.Edit)]
 
         public async Task<IActionResult> Edit(string id)
         {
@@ -158,6 +168,8 @@ namespace Final_Project.Controllers
             };
             return View(model);
         }
+        [Authorize(Permissions.Users.Edit)]
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(UpdateUserVM model)
@@ -204,7 +216,8 @@ namespace Final_Project.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-       
+        [Authorize(Permissions.Users.Delete)]
+
         public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
@@ -225,13 +238,14 @@ namespace Final_Project.Controllers
             return Ok(result);
         }
 
-     
+        [Authorize(Permissions.Users.View)]
+
         public IActionResult Home()
         {
 
             var username = User.Identity.Name;
             var user = _userManager.FindByEmailAsync(username).Result;
-            ViewBag.EmployeeName = user;
+            ViewBag.EmployeeName = user.Name;
 
             List<Order> orders = _orderRepository.GetAll();
 

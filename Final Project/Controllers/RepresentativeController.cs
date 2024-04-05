@@ -7,9 +7,9 @@ using Final_Project.Repository.OrderRepo;
 using Final_Project.Repository.OrderStateRepo;
 using Final_Project.Repository.RepresintativeRepo;
 using Final_Project.ViewModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Final_Project.Controllers
 {
@@ -23,7 +23,7 @@ namespace Final_Project.Controllers
         private readonly IOrderRepository _orderRepository;
         private readonly IOrderStateRepository _orderStateRepository;
 
-        public RepresentativeController(IRepresintativeRepository represintativeRepository, IGovernorateRepository governorateRepository, IBranchRepository branchRepository, IDiscountTypeRepository discountTypeRepository, UserManager<ApplicationUser> userManager, IOrderRepository orderRepository,IOrderStateRepository orderStateRepository)
+        public RepresentativeController(IRepresintativeRepository represintativeRepository, IGovernorateRepository governorateRepository, IBranchRepository branchRepository, IDiscountTypeRepository discountTypeRepository, UserManager<ApplicationUser> userManager, IOrderRepository orderRepository, IOrderStateRepository orderStateRepository)
         {
             _represintativeRepository = represintativeRepository;
             _governorateRepository = governorateRepository;
@@ -33,7 +33,9 @@ namespace Final_Project.Controllers
             _orderRepository = orderRepository;
             _orderStateRepository = orderStateRepository;
         }
-        public IActionResult Index(int pg=1)
+        [Authorize(Permissions.Users.View)]
+
+        public IActionResult Index(int pg = 1)
         {
             List<Representative> representatives = _represintativeRepository.GetAll();
             const int pageSize = 5;
@@ -50,6 +52,7 @@ namespace Final_Project.Controllers
         }
 
 
+        [Authorize(Permissions.Representatives.View)]
 
         public IActionResult Home()
         {
@@ -63,6 +66,7 @@ namespace Final_Project.Controllers
 
 
 
+        [Authorize(Permissions.Users.Create)]
 
         [HttpGet]
         public async Task<IActionResult> Create()
@@ -75,7 +79,10 @@ namespace Final_Project.Controllers
             };
             return View(representativeVM);
         }
+        [Authorize(Permissions.Users.Create)]
+
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(RepresentativeGovBranchPercentageViewModel representativeVM)
         {
             representativeVM.Governorates = _governorateRepository.GetAll();
@@ -85,13 +92,13 @@ namespace Final_Project.Controllers
             {
                 return View(representativeVM);
             }
-            if(await _userManager.FindByEmailAsync(representativeVM.Email) != null)
+            if (await _userManager.FindByEmailAsync(representativeVM.Email) != null)
             {
                 ModelState.AddModelError("Email", "Email already exist");
                 return View(representativeVM);
             }
             var user = new ApplicationUser
-            {               
+            {
                 Email = representativeVM.Email,
                 UserName = representativeVM.Email,
                 Name = representativeVM.Name,
@@ -125,6 +132,7 @@ namespace Final_Project.Controllers
             return RedirectToAction("Index");
 
         }
+        [Authorize(Permissions.Users.Edit)]
 
         [HttpGet]
         public async Task<IActionResult> Edit(string id)
@@ -159,6 +167,7 @@ namespace Final_Project.Controllers
             return View(model);
         }
 
+        [Authorize(Permissions.Users.Edit)]
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -203,6 +212,7 @@ namespace Final_Project.Controllers
             _represintativeRepository.Save();
             return RedirectToAction("Index");
         }
+        [Authorize(Permissions.Users.Delete)]
 
         public async Task<IActionResult> changeState(string id)
         {
@@ -220,6 +230,8 @@ namespace Final_Project.Controllers
             return Ok();
         }
 
+        [Authorize(Permissions.Representatives.View)]
+
         public ActionResult ChangeStatus(int orderId, int statusId)
         {
             if (orderId == null || statusId == null)
@@ -233,11 +245,13 @@ namespace Final_Project.Controllers
             return Ok(order.OrderState.Name);
         }
 
+        [Authorize(Permissions.Representatives.View)]
+
 
         [HttpGet]
-        public  IActionResult ChangeOrderStatus(int id)
+        public IActionResult ChangeOrderStatus(int id)
         {
-         
+
             Order order = _orderRepository.GetById(id);
             if (order == null)
             {
@@ -252,6 +266,8 @@ namespace Final_Project.Controllers
             ViewBag.OrderState = orderStates;
             return View(orderWithOrderStateVM);
         }
+        [Authorize(Permissions.Representatives.View)]
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -259,26 +275,23 @@ namespace Final_Project.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Assuming _orderRepository is your data repository for orders
-                // and it has a method for updating an order
+
                 Order existingOrder = _orderRepository.GetById(orderVM.OrderID);
                 if (existingOrder == null)
                 {
                     return NotFound();
                 }
 
-                // Update the order's state with the new value
+
                 existingOrder.OrderStateId = orderVM.OrderStateId;
 
-                _orderRepository.Update(existingOrder); // Update the order in the repository
-                _orderRepository.Save(); // Save the changes to the database
+                _orderRepository.Update(existingOrder);
+                _orderRepository.Save();
 
-                // Redirect to a confirmation page or back to the list/index
                 return RedirectToAction("Home");
             }
 
-            // If we get here, there was a problem with the data
-            // Reload the orderStates in case we need to redisplay the form
+
             List<OrderState> orderStates = _orderStateRepository.GetOrders();
             ViewBag.OrderState = orderStates;
             return View(orderVM);

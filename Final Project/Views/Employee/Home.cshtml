@@ -4,10 +4,51 @@
     ViewData["Title"] = "Home";
 }
 <style>
-    .card-title {
-        white-space: nowrap;
+    
+    .card {
+        border: none;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
         overflow: hidden;
-        text-overflow: ellipsis;
+        margin-bottom:10px;
+        transition: all 0.3s ease;
+    }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card .card-icon {
+            font-size: 3rem;
+            color: #4CAF50; 
+        }
+
+        .card .card-title {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            min-height:100px;
+            color: #333;
+        }
+
+        .card .card-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #555;
+        }
+
+    .alert-primary {
+        background-color: #007bff;
+        color: #fff;
+        border-color: #007bff;
+    }
+
+        .alert-primary a {
+            color: #fff;
+            font-weight: bold;
+        }
+
+    .container {
+        padding: 20px;
     }
 </style>
 
@@ -24,7 +65,9 @@
                 <div class="col-xl-4 col-lg-6">
                     <div class="card l-bg-blue-dark overflow-hidden">
                         <div class="card-statistic-3 p-4">
-                            <div class="card-icon card-icon-large"><i class="fas fa-shopping-cart"></i></div>
+                            <div class="card-icon card-icon-large">
+                                <img src="/img/mylogo.png" class="navbar-brand-img w-100"  alt="main_logo">
+                            </div>
                             <div class="mb-4">
                                 <h5 class="card-title mb-0">@ViewBag.OrderStatus[i].Name</h5>
                             </div>
