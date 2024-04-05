@@ -141,14 +141,14 @@ namespace Final_Project.Migrations
                         new
                         {
                             Id = 1,
-                            CreationDate = new DateTime(2024, 3, 30, 16, 19, 7, 683, DateTimeKind.Local).AddTicks(1252),
+                            CreationDate = new DateTime(2024, 4, 4, 0, 23, 13, 973, DateTimeKind.Local).AddTicks(4300),
                             IsDeleted = false,
                             Name = "Ramsess"
                         },
                         new
                         {
                             Id = 2,
-                            CreationDate = new DateTime(2024, 3, 30, 16, 19, 7, 683, DateTimeKind.Local).AddTicks(1342),
+                            CreationDate = new DateTime(2024, 4, 4, 0, 23, 13, 973, DateTimeKind.Local).AddTicks(4370),
                             IsDeleted = false,
                             Name = "Maady"
                         });

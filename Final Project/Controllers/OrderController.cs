@@ -17,6 +17,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using NuGet.Protocol;
 using Final_Project.ViewModel;
+using Final_Project.Needs;
+using static Final_Project.Needs.Permissions;
+
 
 
 namespace Final_Project.Controllers
@@ -63,9 +66,13 @@ namespace Final_Project.Controllers
             _represintativeRepository = representativeRepository;
 
         }
-        public IActionResult Index()
+        [Authorize(Permissions.Orders.View)]
+
+        public IActionResult Index(int pg = 1)
         {
             List<Order> orders;
+         
+
             if (User.IsInRole("Trader"))
             {
                 var username = User.Identity.Name;
@@ -84,8 +91,8 @@ namespace Final_Project.Controllers
             //error * **************************
             foreach (var item in orders)
             {
-                City city = _cityRepository.GetById((int)item.ClientCityId);
-                Governorate governorate = _governorateRepository.GetById((int)item.ClientGovernorateId);
+                Models.City city = _cityRepository.GetById((int)item.ClientCityId);
+                Models.Governorate governorate = _governorateRepository.GetById((int)item.ClientGovernorateId);
                 OrderState orderState = _orderStateRepository.getById((int)item.OrderStateId);
                 Trader trader = _traderRepository.GetById(item.TraderId);
 
@@ -107,9 +114,21 @@ namespace Final_Project.Controllers
             }
 
             ViewData["OrderStates"] = _orderStateRepository.GetOrders();
+            const int pageSize = 5;
+            if (pg < 1)
+                pg = 1;
+            int recsCount = OrdersViewModel.Count();
+            var pager = new Pager(recsCount, pg, pageSize);
+            int recSkip = (pg - 1) * pageSize;
+            var data = OrdersViewModel.Skip(recSkip).Take(pager.PageSize).ToList();
+            pager.Controller = "Employee";
+            pager.Action = "Index";
+            this.ViewBag.pager = pager;
 
-            return View(OrdersViewModel);
+            return View(data);
         }
+        [Authorize(Permissions.Orders.View)]
+
         public IActionResult Details(int id)
         {
 
@@ -127,6 +146,8 @@ namespace Final_Project.Controllers
             ViewData["Products"] = products;
             return View(order);
         }
+        [Authorize(Permissions.Orders.Create)]
+
         public IActionResult Create()
         {
             ViewData["DeliverTypes"] = _deliverTypeRepository.GetAll();
@@ -140,6 +161,8 @@ namespace Final_Project.Controllers
             ViewBag.TraderId = user.Id.ToString();
             return View();
         }
+        [Authorize(Permissions.Orders.Create)]
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(Order order)
@@ -165,9 +188,11 @@ namespace Final_Project.Controllers
         
         public IActionResult getCitesByGovernrate(int govId)
         {
-            List<City> cities = _cityRepository.GetAllCitiesByGovId(govId);
+            List<Models.City> cities = _cityRepository.GetAllCitiesByGovId(govId);
             return Json(cities);
         }
+        [Authorize(Permissions.Orders.Edit)]
+
         public IActionResult Edit(int id)
         {
             ViewData["DeliverTypes"] = _deliverTypeRepository.GetAll();
@@ -184,6 +209,7 @@ namespace Final_Project.Controllers
             
             return View(order);
         }
+        [Authorize(Permissions.Orders.Edit)]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(Order order)
@@ -210,6 +236,8 @@ namespace Final_Project.Controllers
             ViewData["City"] = _cityRepository.GetAll().Where(c => c.GoverId == order.ClientGovernorateId).ToList();
             return View(order);
         }
+        [Authorize(Permissions.Orders.Delete)]
+
         public IActionResult Delete(int id)
         {
             Order order = _orderRepository.GetById(id);
@@ -221,6 +249,7 @@ namespace Final_Project.Controllers
             _orderRepository.Save();
             return Ok();
         }
+        [Authorize(Permissions.Orders.View)]
 
         public IActionResult GetFilteredOrders(int orderState)
         {
@@ -251,8 +280,8 @@ namespace Final_Project.Controllers
             foreach (var item in filteredOrders)
             {
 
-                City city = _cityRepository.GetById((int)item.ClientCityId);
-                Governorate governorate = _governorateRepository.GetById((int)item.ClientGovernorateId);
+                Models.City city = _cityRepository.GetById((int)item.ClientCityId);
+                Models.Governorate governorate = _governorateRepository.GetById((int)item.ClientGovernorateId);
                 // try in view 
                 OrderState orderS = _orderStateRepository.getById((int)item.OrderStateId);
                 Trader trader = _traderRepository.GetById(item.TraderId);
@@ -280,6 +309,7 @@ namespace Final_Project.Controllers
         }
 
 
+        [Authorize(Permissions.Orders.Create)]
 
         public IActionResult AddProduct(string name, int quantity, decimal weight, decimal price, string orderno)
         {
@@ -297,6 +327,7 @@ namespace Final_Project.Controllers
             return Ok(pro.Id);
         }
 
+        [Authorize(Permissions.Orders.Delete)]
 
         public IActionResult DeleteProduct(int id)
         {
@@ -357,6 +388,7 @@ namespace Final_Project.Controllers
             return View(order);
         }
 
+        [Authorize(Permissions.Orders.View)]
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -370,6 +402,7 @@ namespace Final_Project.Controllers
 
             return RedirectToAction("Index");
         }
+        [Authorize(Permissions.Orders.View)]
 
         public IActionResult LinkOrderToRepresentative(string orderId, string repId)
         {
@@ -380,7 +413,9 @@ namespace Final_Project.Controllers
             _orderRepository.Save();
 
             return RedirectToAction("Index", "Order");
-        }                   
+        }
+        [Authorize(Permissions.OrderReports.View)]
+
         public IActionResult OrderReport(string startDate, string endDate, int statusId)
         {
             List<OrderReporttWithOrderByStatusDateVM> ordersViewModel = new List<OrderReporttWithOrderByStatusDateVM>();

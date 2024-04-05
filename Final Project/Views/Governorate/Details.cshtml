@@ -4,7 +4,75 @@
 @{
 }
 @model List<City>
+<style>
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
 
+        .table thead th {
+            background-color: #f8f9fa;
+            color: #212529;
+            font-weight: bold;
+        }
+
+        .table tbody tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .table td, .table th {
+            padding: 12px 15px;
+            border: 1px solid #dee2e6;
+        }
+
+    .btn-secondary, .btn-primary, .btn-danger {
+        color: #fff;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 5px;
+        text-decoration: none;
+    }
+
+        .btn-secondary:hover {
+            background-color: #495057;
+        }
+
+        .btn-danger:hover {
+            background-color: #C70039;
+        }
+
+        .btn-primary:hover {
+            background-color: #293462;
+        }
+
+
+    .shadow {
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+
+
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    .form-check-input[type="checkbox"] {
+        width: 40px;
+        height: 20px;
+        margin: 0;
+        cursor: pointer;
+    }
+
+        .form-check-input[type="checkbox"]:checked + .form-check-label::before {
+            background-color: #007bff;
+        }
+
+        .form-check-input[type="checkbox"]:checked + .form-check-label::after {
+            left: 20px;
+        }
+</style>
 <div class="card mt-4">
     <div class="card-header">
         <h2>@ViewBag.GovName</h2>
@@ -33,7 +101,8 @@
                     <tbody>
                         @foreach (var item in Model)
                         {
-                            <tr>
+                           
+                           <tr>
                                 <td>@item.Name </td>
                                 <td>@item.ShippingCost</td>
                                 <td>@item.PickUpCost</td>
@@ -48,7 +117,7 @@
 </div>
 
 <div class="container">
-    <div class="row">
-        <a asp-action="Index" class="btn btn-primary">Back</a>
+    <div class="row mt-5">
+        <a asp-action="Index" class="col-3 btn btn-primary">Back</a>
     </div>
 </div>
