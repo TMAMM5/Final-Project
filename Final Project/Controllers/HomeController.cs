@@ -1,4 +1,5 @@
 using Final_Project.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -8,6 +9,9 @@ namespace Final_Project.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
+        //UserManager<ApplicationUser> _userManager;
+
+
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
@@ -15,7 +19,15 @@ namespace Final_Project.Controllers
 
         public IActionResult Index()
         {
-            return View();
+			if (User.Identity.IsAuthenticated)
+			{
+					return View();
+			}
+			else
+			{
+				
+				return RedirectToAction("Login", "Login"); 
+			}			
         }
 
         public IActionResult Privacy()

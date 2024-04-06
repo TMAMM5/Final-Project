@@ -24,7 +24,7 @@
             <h6 class="mt-2"><i class="fa-solid fa-house"></i> > <a asp-action="Index" class="text-decoration-none">Orders</a></h6>
         </div>
 
-        @if (AuthorizationService.AuthorizeAsync(User, Permissions.Orders.Create).Result.Succeeded)
+        @if (User.IsInRole(Roles.Trader.ToString()))
 
         {
             <p>
@@ -217,9 +217,7 @@
                                                 </svg></a>
                                     </td>
         }
-                                             <td>
-                                                 <a class="btn btn-info text-white"><i class="fa-solid fa-print"></i></a>
-                                             </td>
+                                          
 
 
                                             </tr>`

@@ -38,7 +38,7 @@ namespace Final_Project.Controllers
                         await _signInManager.SignInAsync(user, isPersistent: cred.IsPresistent);
                         if (await _userManager.IsInRoleAsync(user, "Trader"))
                         {
-                            return RedirectToAction("Home", "Trader"); // Redirect to Admin controller's Index action
+                            return RedirectToAction("Home", "Trader"); 
                         }
                         else if (await _userManager.IsInRoleAsync(user,"Representative"))
                         {
