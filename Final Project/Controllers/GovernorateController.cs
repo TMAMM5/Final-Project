@@ -38,7 +38,7 @@ namespace Final_Project.Controllers
             }
             else
             {
-                var searchItems = _governorateRepository.GetAll().Where(s => s.Name.Contains(childname)).ToList();
+                var searchItems = _governorateRepository.GetAll().Where(s => s.Name.ToLower().Contains(childname.ToLower())).ToList();
                 return View(searchItems);
             }
         }

@@ -7,37 +7,110 @@
     var i = 1;
 }
 
+<style>
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
 
-<h1>Order Reports</h1>
+
+        .table thead th {
+            background-color: #f8f9fa;
+            color: #212529;
+            font-weight: bold;
+        }
+
+        .table tbody tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+
+        .table td, .table th {
+            padding: 12px 15px;
+            border: 1px solid #dee2e6;
+        }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        color: #fff;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 5px;
+        text-decoration: none;
+    }
+
+        .btn-secondary:hover {
+            background-color: #495057;
+        }
+
+
+    .shadow {
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+
+
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+
+    .form-check-input[type="checkbox"] {
+        width: 40px;
+        height: 20px;
+        margin: 0;
+        cursor: pointer;
+    }
+
+        .form-check-input[type="checkbox"]:checked + .form-check-label::before {
+            background-color: #007bff;
+        }
+
+        .form-check-input[type="checkbox"]:checked + .form-check-label::after {
+            left: 20px;
+        }
+
+    h6 a:hover {
+        color: #ffc400 !important;
+    }
+
+</style>
+
+<h1 class="text-bold text-light">Order Reports</h1>
 
 <div class="container my-2">
     <div class="row justify-content-between">
         <div>
-            <h6 class="mt-2"><i class="fa-solid fa-house"></i> > <a href="#" class="text-decoration-none">Order Reports</a></h6>
+            <h6 class="mt-2">
+                <svg stroke="currentColor" fill="#fff" stroke-width="0" viewBox="0 0 512 512" height="20px" width="20px" xmlns="http://www.w3.org/2000/svg"><path d="M48 82.7v346.7c0 19.1 15.5 34.7 34.7 34.7h346.7c19.1 0 34.7-15.5 34.7-34.7V82.7c0-19.1-15.5-34.7-34.7-34.7H82.7C63.5 48 48 63.5 48 82.7zm89.3 297.1c-13.1 1.7-24.1-9.3-22.4-22.4 1.1-8.9 8.3-16.1 17.2-17.2 13.1-1.7 24.1 9.3 22.4 22.4-1.1 8.9-8.3 16.1-17.2 17.2zm0-104c-13.1 1.7-24.1-9.3-22.4-22.4 1.1-8.9 8.3-16.1 17.2-17.2 13.1-1.7 24.1 9.3 22.4 22.4-1.1 8.9-8.3 16.1-17.2 17.2zm0-104c-13.1 1.7-24.1-9.3-22.4-22.4 1.1-8.9 8.3-16.1 17.2-17.2 13.1-1.7 24.1 9.3 22.4 22.4-1.1 8.9-8.3 16.1-17.2 17.2zM384.7 374h-180c-7.7 0-14-6.3-14-14s6.3-14 14-14h180c7.7 0 14 6.3 14 14s-6.3 14-14 14zm0-104h-180c-7.7 0-14-6.3-14-14s6.3-14 14-14h180c7.7 0 14 6.3 14 14s-6.3 14-14 14zm0-104h-180c-7.7 0-14-6.3-14-14s6.3-14 14-14h180c7.7 0 14 6.3 14 14s-6.3 14-14 14z"></path></svg>
+                > <a asp-action="OrderReport" class="text-decoration-none text-bold text-light">Order Reports</a>
+            </h6>
         </div>
     </div>
 </div>
 
 <form asp-controller="Order" asp-action="OrderReport">
     <div class="d-flex mb-3">
-        <div class="col-md-3">
+        <div class="col-md-3 me-2">
             <label>Status :</label>
             <select name="statusId" asp-items="status" class="form-select form-control" aria-label="Default select example">
                 <option value="0">Select Status</option>
             </select>
         </div>
 
-        <div class="col-md-3">
+        <div class="col-md-3 me-2">
             <label>From :</label>
             <input name="startDate" class="form-control" type="date">
         </div>
 
-        <div class="col-md-3">
+        <div class="col-md-3 me-2">
             <label>To :</label>
             <input name="EndDate" class="form-control" type="date">
         </div>
         <div class="col-md-3" style="margin-top:32px;">
-            <button class="btn btn-primary" type="submit">Search</button>
+            <button class="btn btn-dark" type="submit">Search</button>
         </div>
     </div>
 

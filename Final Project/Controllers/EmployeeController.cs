@@ -115,7 +115,7 @@ namespace Final_Project.Controllers
 
             user.Name = userForm.Name;
             user.Email = userForm.Email;
-            user.UserName = userForm.Name;
+            user.UserName = userForm.Email;
             user.PhoneNumber = userForm.PhoneNumber;
             user.Address = userForm.Address;
             user.BranchId = userForm.BranchId;
