@@ -5,12 +5,21 @@
     SelectList govSelectList = new SelectList(ViewBag.Governrates, "Id", "Name");
 }
 @model City
-<h1>Add City</h1>
+<style>
+    h6 a:hover {
+        color: #ffc400 !important;
+    }
+
+</style>
+<h1 class="text-bold text-light">Add City</h1>
 
 <div class="container my-2">
     <div class="row justify-content-between">
         <div>
-            <h6 class="mt-2"><i class="fa-solid fa-house"></i> ><a asp-action="Index" class="text-decoration-none">Cities</a> > <b><a asp-action="create" class="text-decoration-none">Add Cities</a></b></h6>
+            <h6 class="mt-2">
+                <svg stroke="currentColor" fill="#fff" stroke-width="0" viewBox="0 0 384 512" height="20px" width="20px" xmlns="http://www.w3.org/2000/svg"><path d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"></path></svg>
+                > <a asp-action="Index" class="text-decoration-none text-light text-bold">Cities</a> > <a asp-action="Create" class="text-decoration-none text-light text-bold">Create City</a>
+            </h6>
         </div>
     </div>
 </div>
