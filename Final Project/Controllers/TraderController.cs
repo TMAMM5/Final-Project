@@ -40,23 +40,29 @@ namespace Final_Project.Controllers
             _orderStateRepository = orderStateRepository;
         }
 
-        public IActionResult Index(int pg=1)
+        public IActionResult Index(string childname, int pg = 1)
         {
-            
-            var trader = _traderRepository.GetAll();
-            const int pageSize = 5;
-            if (pg < 1)
-                pg = 1;
-            int recsCount = trader.Count();
-            var pager =new Pager(recsCount,pg,pageSize);
-            int recSkip=(pg-1)*pageSize;
-            var data=trader.Skip(recSkip).Take(pager.PageSize).ToList();
-            pager.Controller="Trader";
-            pager.Action = "Index";
-            this.ViewBag.pager = pager;
-            return View(data);     
+            if (String.IsNullOrEmpty(childname))
+            {
+                var trader = _traderRepository.GetAll();
+                const int pageSize = 5;
+                if (pg < 1)
+                    pg = 1;
+                int recsCount = trader.Count();
+                var pager = new Pager(recsCount, pg, pageSize);
+                int recSkip = (pg - 1) * pageSize;
+                var data = trader.Skip(recSkip).Take(pager.PageSize).ToList();
+                pager.Controller = "Trader";
+                pager.Action = "Index";
+                this.ViewBag.pager = pager;
+                return View(data);
+            }
+            else
+            {
+                var searchItems = _traderRepository.GetAll().Where(s => s.AppUser.Name.ToLower().Contains(childname.ToLower())).ToList();
+                return View(searchItems);
+            }
         }
-
         public async Task<IActionResult> Create()
         {
             var trader = new TraderVM
