@@ -16,20 +16,28 @@ namespace Final_Project.Controllers
 
         [Authorize(Permissions.Branches.View)]
 
-        public IActionResult Index(int pg = 1)
+        public IActionResult Index(string childname, int pg = 1)
         {
-            List<Branch> branchs = branchRepository.GetAll();
-            const int pageSize = 5;
-            if (pg < 1)
-                pg = 1;
-            int recsCount = branchs.Count();
-            var pager = new Pager(recsCount, pg, pageSize);
-            int recSkip = (pg - 1) * pageSize;
-            var data = branchs.Skip(recSkip).Take(pager.PageSize).ToList();
-            pager.Controller = "Branch";
-            pager.Action = "Index";
-            this.ViewBag.pager = pager;
-            return View(data);
+            if (String.IsNullOrEmpty(childname))
+            {
+                List<Branch> branchs = branchRepository.GetAll();
+                const int pageSize = 5;
+                if (pg < 1)
+                    pg = 1;
+                int recsCount = branchs.Count();
+                var pager = new Pager(recsCount, pg, pageSize);
+                int recSkip = (pg - 1) * pageSize;
+                var data = branchs.Skip(recSkip).Take(pager.PageSize).ToList();
+                pager.Controller = "Branch";
+                pager.Action = "Index";
+                this.ViewBag.pager = pager;
+                return View(data);
+            }
+            else
+            {
+                var searchItems = branchRepository.GetAll().Where(s => s.Name.ToLower().Contains(childname.ToLower())).ToList();
+                return View(searchItems);
+            }
         }
         [Authorize(Permissions.Branches.Create)]
 

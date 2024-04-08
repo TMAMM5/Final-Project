@@ -21,37 +21,43 @@ namespace Final_Project.Controllers
         }
         [Authorize(Permissions.Roles.View)]
 
-        public IActionResult Index(string word , int pg=1)
+        public IActionResult Index(string childname, string word, int pg = 1)
         {
-            List<IdentityRole> roles;    
-            if (string.IsNullOrEmpty(word))
+            if (String.IsNullOrEmpty(childname))
             {
-                roles = _roleManager.Roles.Where(r => r.Name != "Representative" && r.Name != "Trader").ToList();
+                List<IdentityRole> roles;
+                if (string.IsNullOrEmpty(word))
+                {
+                    roles = _roleManager.Roles.Where(r => r.Name != "Representative" && r.Name != "Trader").ToList();
+                }
+                else
+                {
+                    roles = _roleManager.Roles
+                       .Where(e => e.Name.ToLower().Contains(word.ToLower())).Where(r => r.Name != "Representative" && r.Name != "Trader").ToList();
+                }
+                var superAdminRole = roles.SingleOrDefault(r => r.Name == "SuperAdmin");
+                if (superAdminRole != null)
+                {
+                    roles.Remove(superAdminRole);
+                    roles.Insert(0, superAdminRole);
+                }
+                const int pageSize = 5;
+                if (pg < 1)
+                    pg = 1;
+                int recsCount = roles.Count();
+                var pager = new Pager(recsCount, pg, pageSize);
+                int recSkip = (pg - 1) * pageSize;
+                var data = roles.Skip(recSkip).Take(pager.PageSize).ToList();
+                pager.Controller = "Role";
+                pager.Action = "Index";
+                this.ViewBag.pager = pager;
+                return View(data);
             }
-            else
-            {
-                roles = _roleManager.Roles
-                   .Where(e => e.Name.ToLower().Contains(word.ToLower())).Where(r => r.Name != "Representative" && r.Name != "Trader").ToList();
+            else {
+                var searchItems = _roleManager.Roles.Where(s => s.Name.ToLower().Contains(childname.ToLower())).ToList();
+                return View(searchItems);
             }
-            var superAdminRole = roles.SingleOrDefault(r => r.Name == "SuperAdmin");
-            if (superAdminRole != null)
-            {
-                roles.Remove(superAdminRole);
-                roles.Insert(0, superAdminRole);
-            }
-            const int pageSize = 5;
-            if (pg < 1)
-                pg = 1;
-            int recsCount = roles.Count();
-            var pager = new Pager(recsCount, pg, pageSize);
-            int recSkip = (pg - 1) * pageSize;
-            var data = roles.Skip(recSkip).Take(pager.PageSize).ToList();
-            pager.Controller = "Role";
-            pager.Action = "Index";
-            this.ViewBag.pager = pager;
-            return View(data);
         }
-
         [Authorize(Permissions.Roles.Create)]
 
         [HttpPost]

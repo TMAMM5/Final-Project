@@ -37,39 +37,61 @@ namespace Final_Project.Controllers
 
         [Authorize(Permissions.Users.View)]
 
-        public async Task<IActionResult> Index(int pg=1)
+        public async Task<IActionResult> Index(string childname, int pg=1)
         {
-            var usersFromDb = await _userManager.Users.ToListAsync();
-            var users = usersFromDb
-                .Where(u => !_userManager.IsInRoleAsync(u, "Representative").Result && !_userManager.IsInRoleAsync(u, "Trader").Result && !_userManager.IsInRoleAsync(u,Roles.SuperAdmin.ToString()).Result)
-                .Select(user => new UserVM
-                {
-                    Id = user.Id,
-                    Name = user.Name,
-                    Email = user.Email,
-                    PhoneNumber = user.PhoneNumber,
-                    creationDate = user.creationDate,
-                    Branch = user.Branch,
-                    Role = _userManager.GetRolesAsync(user).Result.FirstOrDefault(),
-                    IsDeleted = user.IsDeleted
-                })
-                .ToList();
+            if (String.IsNullOrEmpty(childname))
+            {
+                var usersFromDb = await _userManager.Users.ToListAsync();
+                var users = usersFromDb
+                    .Where(u => !_userManager.IsInRoleAsync(u, "Representative").Result && !_userManager.IsInRoleAsync(u, "Trader").Result && !_userManager.IsInRoleAsync(u, Roles.SuperAdmin.ToString()).Result)
+                    .Select(user => new UserVM
+                    {
+                        Id = user.Id,
+                        Name = user.Name,
+                        Email = user.Email,
+                        PhoneNumber = user.PhoneNumber,
+                        creationDate = user.creationDate,
+                        Branch = user.Branch,
+                        Role = _userManager.GetRolesAsync(user).Result.FirstOrDefault(),
+                        IsDeleted = user.IsDeleted
+                    })
+                    .ToList();
 
 
-            const int pageSize = 5;
-            if (pg < 1)
-                pg = 1;
-            int recsCount = users.Count();
-            var pager = new Pager(recsCount, pg, pageSize);
-            int recSkip = (pg - 1) * pageSize;
-            var data = users.Skip(recSkip).Take(pager.PageSize).ToList();
-            pager.Controller = "Employee";
-            pager.Action = "Index";
-            this.ViewBag.pager = pager;
+                const int pageSize = 5;
+                if (pg < 1)
+                    pg = 1;
+                int recsCount = users.Count();
+                var pager = new Pager(recsCount, pg, pageSize);
+                int recSkip = (pg - 1) * pageSize;
+                var data = users.Skip(recSkip).Take(pager.PageSize).ToList();
+                pager.Controller = "Employee";
+                pager.Action = "Index";
+                this.ViewBag.pager = pager;
 
 
 
-            return View(data);
+                return View(data);
+            }
+            else
+            {
+                var searchItems = await _userManager.Users.Where(s => s.Name.ToLower().Contains(childname.ToLower())).ToListAsync();
+                var users = searchItems
+                     .Where(u => !_userManager.IsInRoleAsync(u, "Representative").Result && !_userManager.IsInRoleAsync(u, "Trader").Result && !_userManager.IsInRoleAsync(u, Roles.SuperAdmin.ToString()).Result)
+                     .Select(user => new UserVM
+                     {
+                         Id = user.Id,
+                         Name = user.Name,
+                         Email = user.Email,
+                         PhoneNumber = user.PhoneNumber,
+                         creationDate = user.creationDate,
+                         Branch = user.Branch,
+                         Role = _userManager.GetRolesAsync(user).Result.FirstOrDefault(),
+                         IsDeleted = user.IsDeleted
+                     })
+                     .ToList();
+                return View(users);
+            }
         }
         [Authorize(Permissions.Users.Create)]
 

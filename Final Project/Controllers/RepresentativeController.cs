@@ -35,22 +35,29 @@ namespace Final_Project.Controllers
         }
         [Authorize(Permissions.Users.View)]
 
-        public IActionResult Index(int pg = 1)
+        public IActionResult Index(string childname, int pg = 1)
         {
-            List<Representative> representatives = _represintativeRepository.GetAll();
-            const int pageSize = 5;
-            if (pg < 1)
-                pg = 1;
-            int recsCount = representatives.Count();
-            var pager = new Pager(recsCount, pg, pageSize);
-            int recSkip = (pg - 1) * pageSize;
-            var data = representatives.Skip(recSkip).Take(pager.PageSize).ToList();
-            pager.Controller = "Representative";
-            pager.Action = "Index";
-            this.ViewBag.pager = pager;
-            return View(data);
+            if (String.IsNullOrEmpty(childname))
+            {
+                List<Representative> representatives = _represintativeRepository.GetAll();
+                const int pageSize = 5;
+                if (pg < 1)
+                    pg = 1;
+                int recsCount = representatives.Count();
+                var pager = new Pager(recsCount, pg, pageSize);
+                int recSkip = (pg - 1) * pageSize;
+                var data = representatives.Skip(recSkip).Take(pager.PageSize).ToList();
+                pager.Controller = "Representative";
+                pager.Action = "Index";
+                this.ViewBag.pager = pager;
+                return View(data);
+            }
+            else
+            {
+                var searchItems = _represintativeRepository.GetAll().Where(s => s.AppUser.Name.ToLower().Contains(childname.ToLower())).ToList();
+                return View(searchItems);
+            }
         }
-
 
         [Authorize(Permissions.Representatives.View)]
 

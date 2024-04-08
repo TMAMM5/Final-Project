@@ -88,6 +88,20 @@
             height:70px;
         }
 
+    .input-group {
+        width: 100%;
+    }
+
+    .form-control.search-input {
+        border-radius: 5px 0 0 5px;
+        height: 38px; /* Adjust the height as needed */
+    }
+
+    .btn.btn-primary.search-button {
+        border-radius: 0 5px 5px 0;
+        height: 38px; /* Adjust the height to match the input */
+    }
+
     h6 a:hover {
         color: #ffc400 !important;
     }
@@ -112,7 +126,15 @@
 <div class="card shadow mb-4 text-center">
     <div class="card-body">
         <div class="table-responsive">
-<partial name="_Pager" model="@pager" />
+            <div class="col-md-3">
+                <form asp-action="Index">
+                    <div class="input-group">
+                        <input name="childname" class="form-control search-input" type="text" placeholder="Search" aria-label="Search" />
+                        <button class="btn btn-primary search-button" type="submit" id="button-addon2">Search</button>
+                    </div>
+                </form>
+            </div>
+            <partial name="_Pager" model="@pager" />
             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                 <thead>
                     <tr>
@@ -153,4 +175,13 @@
         </div>
     </div>
 </div>
-
+@section Scripts {
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+<script>
+    $(function () {
+        $("#basic-text1").click(function () {
+            $("Form").submit();
+        })
+    });
+</script>
+}

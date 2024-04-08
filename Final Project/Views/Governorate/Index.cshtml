@@ -125,23 +125,16 @@
 <div class="card shadow mb-4 text-center">
     <div class="card-body">
         <div class="table-responsive">
-            <div class="row justify-content-between">
-                <div class="col-md-3">
-                    <form asp-action="Index">
-                        <div class="input-group">
-                            <input name="childname" class="form-control search-input" type="text" placeholder="Search" aria-label="Search" />
-                            <button class="btn btn-primary search-button" type="submit" id="button-addon2">Search</button>
-                        </div>
-                    </form>
-                </div>
-                <div class="col-md-6">
-                    <partial class="col-12" name="_Pager" model="@pager" />
-                </div>
+            <div class="col-md-3">
+                <form asp-action="Index">
+                    <div class="input-group">
+                        <input name="childname" class="form-control search-input" type="text" placeholder="Search" aria-label="Search" />
+                        <button class="btn btn-primary search-button" type="submit" id="button-addon2">Search</button>
+                    </div>
+                </form>
             </div>
 
-
-
-            </div>
+            <partial name="_Pager" model="@pager" />
 
 <table class="table table-bordered">
     <thead>
