@@ -247,7 +247,7 @@ namespace Final_Project.Controllers
             }
             _orderRepository.Delete(id);
             _orderRepository.Save();
-            return Ok();
+            return RedirectToAction("Index");
         }
         [Authorize(Permissions.Orders.View)]
 

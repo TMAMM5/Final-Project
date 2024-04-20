@@ -143,7 +143,7 @@
 				border-radius: 2px;
 				position: relative;
 				display: inline-block;
-				background: rgba(255,255,255,.1);
+				background: white;
 			}
 
 				.login-form .group label .icon:before,
@@ -179,7 +179,7 @@
 
 					.login-form .group .check:checked + label .icon:before {
 						transform: scale(1) rotate(45deg);
-					}
+					} 
 
 					.login-form .group .check:checked + label .icon:after {
 						transform: scale(1) rotate(-45deg);
@@ -228,15 +228,15 @@
 				<div class="group">
 					<input asp-for="IsPresistent" id="IsPresistent" type="checkbox" name="IsPresistent" class="check">
 
-					<label for="IsPresistent"><span class="icon"></span> Remember Me</label>
+					<label style="color:#aaa !important" for="IsPresistent"><span class="icon"></span> Remember Me</label>
 				</div>
 				<div class="group">
 					<input type="submit" class="button" value="Sign In">
 				</div>
 				<div class="hr"></div>
-				<div class="foot-lnk">
-					<a href="#forgot">Forgot Password?</a>
-				</div>
+				@* <div class="foot-lnk">
+					<a href="#forgot">forgot password?</a>
+				</div> *@
 			</form>
 			
 		</div>

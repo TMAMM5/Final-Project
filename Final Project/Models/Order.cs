@@ -11,6 +11,7 @@ namespace Final_Project.Models
 
         [Display(Name = "Order Type ")]
         [ForeignKey("OrderType")]
+        [Required(ErrorMessage ="Order Type Required")]
         public int? OrderTypeId { get; set; }
         public virtual OrderType? OrderType { get; set; }
 
@@ -33,11 +34,15 @@ namespace Final_Project.Models
 
         [Display(Name = "Governorate")]
         [ForeignKey("ClientGovernorate")]
+        [Required(ErrorMessage = "Governorate is Required")]
+
         public int? ClientGovernorateId { get; set; }
         public virtual Governorate? ClientGovernorate { get; set; }
 
         [Display(Name = "City")]
         [ForeignKey("ClientCity")]
+        [Required(ErrorMessage = "City is Required")]
+
         public int? ClientCityId { get; set; }
         public virtual City? ClientCity { get; set; }
 
@@ -50,16 +55,22 @@ namespace Final_Project.Models
 
         [Display(Name = "Delivery Type ")]
         [ForeignKey("DeliverType")]
+        [Required(ErrorMessage = "Delivery Type is Required")]
+
         public int? DeliveryTypeId { get; set; }
         public virtual DeliverType? DeliverType { get; set; }
 
         [Display(Name = "Payment Method")]
         [ForeignKey("PaymentMethod")]
+        [Required(ErrorMessage = "Payment Method is Required")]
+
         public int? PaymentMethodId { get; set; }
         public virtual PaymentMethod? PaymentMethod { get; set; }
 
         [Display(Name = "Branch")]
         [ForeignKey("Branch")]
+        [Required(ErrorMessage = "Branch is Required")]
+
         public int? BranchId { get; set; }
         public virtual Branch? Branch { get; set; }
 
