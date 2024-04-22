@@ -18,9 +18,11 @@ namespace Final_Project.Controllers
         }
         [Authorize(Permissions.City.View)]
 
-        public IActionResult Index(int pg = 1)
+        public IActionResult Index(string childname,int pg = 1)
         {
-            List<City> cityList = cityRepository.GetAll();
+            if (String.IsNullOrEmpty(childname))
+            {
+                List<City> cityList = cityRepository.GetAll();
             const int pageSize = 5;
             if (pg < 1)
                 pg = 1;
@@ -32,6 +34,12 @@ namespace Final_Project.Controllers
             pager.Action = "Index";
             this.ViewBag.pager = pager;
             return View(data);
+        }
+            else
+            {
+                var searchItems = cityRepository.GetAll().Where(s => s.Name.ToLower().Contains(childname.ToLower())).ToList();
+                return View(searchItems);
+            }
         }
         [Authorize(Permissions.City.Create)]
 
