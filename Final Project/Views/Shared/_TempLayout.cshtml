@@ -250,13 +250,13 @@
         {
             <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl " id="navbarBlur" data-scroll="false">
                 <div class="container-fluid py-1 px-3">
-                    <nav aria-label="breadcrumb">
+                 @*    <nav aria-label="breadcrumb">
                         <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
                             <li class="breadcrumb-item text-sm"><a class="opacity-5 text-white" href="javascript:;">Pages</a></li>
                             <li class="breadcrumb-item text-sm text-white active" aria-current="page">Home</li>
                         </ol>
                         <h6 class="font-weight-bolder text-white mb-0">Home</h6>
-                    </nav>
+                    </nav> *@
                     <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
                         <div class="ms-md-auto pe-md-3 d-flex align-items-center">
                             @*  <div class="input-group">
@@ -471,7 +471,7 @@
         <div class="mt-2 mb-5 d-flex">
             <h6 class="mb-0">Light / Dark</h6>
             <div class="form-check form-switch ps-0 ms-auto my-auto">
-                <input class="form-check-input mt-1 ms-auto" type="checkbox" id="dark-version" onclick="darkMode(this)" checked>
+                <input class="form-check-input mt-1 ms-auto" type="checkbox" id="dark-version" onclick="darkMode(this)" >
             </div>
         </div>
        @*  <a class="btn bg-gradient-dark w-100" href="https://www.creative-tim.com/product/argon-dashboard">Free Download</a>
@@ -608,7 +608,36 @@
         <script async defer src="https://buttons.github.io/buttons.js"></script>
         <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
         <script src="/js/argon-dashboard.min.js?v=2.0.4"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Get all the nav links
+            const navLinks = document.querySelectorAll("#nav-list .nav-link");
+
+            // Loop through each link
+            navLinks.forEach(function (link) {
+                // Add click event listener
+                link.addEventListener("click", function (event) {
+                    // Remove active class from all links
+                    navLinks.forEach(function (navLink) {
+                        navLink.classList.remove("active");
+                    });
+
+                    // Add active class to the clicked link
+                    link.classList.add("active");
+                });
+            });
+        });
+    </script>
+
+    <style>
+        /* Define your active class styles here */
+        .active {
+            background-color: #007bff; /* Change to your desired active color */
+            color: white; /* Change to your desired text color */
+        }
+    </style>
 
         @RenderSection("Scripts", false);
+
 </body>
 </html>
