@@ -22,7 +22,7 @@ namespace Final_Project.ViewModel
         public string? Email { get; set; }
 
         [DataType(DataType.Password)]
-        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{5}$", ErrorMessage = "Password Must Contain At Least one lowercase letter , one uppercase letter and one uppercase letter </br>" +
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{5,20}$", ErrorMessage = "Password Must Contain At Least one lowercase letter , one uppercase letter and one uppercase letter </br>" +
             "With Minimum Length 5 Character")]
         public string? Password { get; set; }
 

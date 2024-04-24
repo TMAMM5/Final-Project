@@ -24,7 +24,7 @@ namespace Final_Project.Controllers
             {
 
                 List<Governorate> governorates = _governorateRepository.GetAll();
-                const int pageSize = 5;
+                const int pageSize = 9;
                 if (pg < 1)
                     pg = 1;
                 int recsCount = governorates.Count();

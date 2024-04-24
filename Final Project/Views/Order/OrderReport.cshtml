@@ -5,6 +5,16 @@
     ViewData["Title"] = "OrderReport";
     SelectList status = new SelectList(ViewBag.status, "Id", "Name");
     var i = 1;
+    Pager pager = new Pager();
+    int pageNo = 0;
+    if (ViewBag.Pager != null)
+    {
+        pager = ViewBag.Pager;
+        pageNo = pager.CurrentPage;
+    }
+
+    int index = 1;
+
 }
 
 <style>
@@ -96,7 +106,7 @@
         <div class="col-md-3 me-2">
             <label>Status :</label>
             <select name="statusId" asp-items="status" class="form-select form-control" aria-label="Default select example">
-                <option value="0">Select Status</option>
+                <option value="">Select Status</option>
             </select>
         </div>
 
@@ -118,7 +128,9 @@
 
 <div class="card shadow mb-4 text-center">
     <div class="card-body">
+            <partial name="_Pager" model="@pager" />
         <div class="table-responsive">
+
             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                 <thead>
                     <tr>
@@ -164,6 +176,7 @@
             </table>
 
         </div>
+            <partial name="_Pager" model="@pager" />
     </div>
 </div>
 

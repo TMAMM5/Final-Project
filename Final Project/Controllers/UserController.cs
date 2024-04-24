@@ -40,7 +40,7 @@ namespace Final_Project.Controllers
                 Role = _userManager.GetRolesAsync(user).Result.FirstOrDefault(),
                 IsDeleted = user.IsDeleted
             }).ToList();
-            const int pageSize = 5;
+            const int pageSize = 9;
             if (pg < 1)
                 pg = 1;
             int recsCount = users.Count();

@@ -45,7 +45,7 @@ namespace Final_Project.Controllers
             if (String.IsNullOrEmpty(childname))
             {
                 var trader = _traderRepository.GetAll();
-                const int pageSize = 5;
+                const int pageSize = 9;
                 if (pg < 1)
                     pg = 1;
                 int recsCount = trader.Count();

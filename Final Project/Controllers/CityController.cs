@@ -23,7 +23,7 @@ namespace Final_Project.Controllers
             if (String.IsNullOrEmpty(childname))
             {
                 List<City> cityList = cityRepository.GetAll();
-            const int pageSize = 5;
+            const int pageSize = 9;
             if (pg < 1)
                 pg = 1;
             int recsCount = cityList.Count();

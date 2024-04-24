@@ -122,10 +122,10 @@
         }</div>
 </div>
 
-<div class="card shadow mb-4 text-center">
+<div class="card shadow  text-center">
     <div class="card-body">
-        <div class="table-responsive">
-            <div class="col-md-3">
+        <div class="row justify-content-between">
+            <div class="col-md-3" style=" padding-top: 15px;">
                 <form asp-action="Index">
                     <div class="input-group">
                         <input name="childname" class="form-control search-input" type="text" placeholder="Search" aria-label="Search" />
@@ -133,9 +133,11 @@
                     </div>
                 </form>
             </div>
-
-            <partial name="_Pager" model="@pager" />
-
+            <div class="col-md-3">
+                <partial name="_Pager" model="@pager" />
+            </div>
+        </div>
+        <div class="table-responsive">
 <table class="table table-bordered">
     <thead>
         <tr>
@@ -174,9 +176,9 @@
        
     </tbody>
 </table>
-            <partial name="_Pager" model="@pager" />
 
 </div>
+            <partial name="_Pager" model="@pager" />
 </div>
 </div>
 @section Scripts {

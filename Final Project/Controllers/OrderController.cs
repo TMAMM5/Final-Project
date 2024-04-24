@@ -66,6 +66,11 @@ namespace Final_Project.Controllers
             _represintativeRepository = representativeRepository;
 
         }
+
+
+
+
+
         [Authorize(Permissions.Orders.View)]
 
         public IActionResult Index(int pg = 1)
@@ -114,19 +119,23 @@ namespace Final_Project.Controllers
             }
 
             ViewData["OrderStates"] = _orderStateRepository.GetOrders();
-            const int pageSize = 5;
+            const int pageSize = 9;
             if (pg < 1)
                 pg = 1;
             int recsCount = OrdersViewModel.Count();
             var pager = new Pager(recsCount, pg, pageSize);
             int recSkip = (pg - 1) * pageSize;
             var data = OrdersViewModel.Skip(recSkip).Take(pager.PageSize).ToList();
-            pager.Controller = "Employee";
+            pager.Controller = "Order";
             pager.Action = "Index";
             this.ViewBag.pager = pager;
 
             return View(data);
         }
+
+
+
+
         [Authorize(Permissions.Orders.View)]
 
         public IActionResult Details(int id)
@@ -135,6 +144,8 @@ namespace Final_Project.Controllers
             Order order = _orderRepository.GetById(id);
             return View(order);
         }
+
+
 
 
         public IActionResult Invoice(int id)
@@ -146,6 +157,10 @@ namespace Final_Project.Controllers
             ViewData["Products"] = products;
             return View(order);
         }
+
+
+
+
         [Authorize(Permissions.Orders.Create)]
 
         public IActionResult Create()
@@ -161,6 +176,10 @@ namespace Final_Project.Controllers
             ViewBag.TraderId = user.Id.ToString();
             return View();
         }
+
+
+
+
         [Authorize(Permissions.Orders.Create)]
 
         [HttpPost]
@@ -186,11 +205,17 @@ namespace Final_Project.Controllers
             return View(order);
         }
         
+
+
         public IActionResult getCitesByGovernrate(int govId)
         {
             List<Models.City> cities = _cityRepository.GetAllCitiesByGovId(govId);
             return Json(cities);
         }
+
+
+
+
         [Authorize(Permissions.Orders.Edit)]
 
         public IActionResult Edit(int id)
@@ -204,11 +229,15 @@ namespace Final_Project.Controllers
             Order order = _orderRepository.GetById(id);
 
             ViewData["City"] = _cityRepository.GetAll().Where(c => c.GoverId == order.ClientGovernorateId).ToList();
-            //  EDIT=>REPO ..... Getproducts()=>Getall()
+          
             order.Products = _productRepository.GetProducts().Where(p => p.OrderNO == order.OrderNo).ToList();
             
             return View(order);
         }
+
+
+
+
         [Authorize(Permissions.Orders.Edit)]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -217,12 +246,12 @@ namespace Final_Project.Controllers
             if (ModelState.IsValid)
             {
                 order.TotalWeight = ProductsWeight(order.OrderNo);
-                order.ShippingPrice = _orderRepository.CalculateTotalPrice(order) /*+ ProductsCost(order.OrderNo)*/;
+                order.ShippingPrice = _orderRepository.CalculateTotalPrice(order) ;
                 
                 order.OrderPrice = order.ShippingPrice + ProductsCost(order.OrderNo);
-                //GetByOrderNumber=>GetByOrderNo
+                
                 order.Products = _productRepository.GetByOrderNumber(order.OrderNo);
-                //update=>Edit
+               
                 _orderRepository.Update(order);
                 _orderRepository.Save();
                 return RedirectToAction("Index");
@@ -236,6 +265,10 @@ namespace Final_Project.Controllers
             ViewData["City"] = _cityRepository.GetAll().Where(c => c.GoverId == order.ClientGovernorateId).ToList();
             return View(order);
         }
+
+
+
+
         [Authorize(Permissions.Orders.Delete)]
 
         public IActionResult Delete(int id)
@@ -247,11 +280,15 @@ namespace Final_Project.Controllers
             }
             _orderRepository.Delete(id);
             _orderRepository.Save();
-            return RedirectToAction("Index");
+            return Ok();
         }
+
+
+
+
         [Authorize(Permissions.Orders.View)]
 
-        public IActionResult GetFilteredOrders(int orderState)
+        public IActionResult GetFilteredOrders(int orderState ,int pg = 1)
         {
             List<OrderReporttWithOrderByStatusDateVM> filteredOrdersViewModel =
                 new List<OrderReporttWithOrderByStatusDateVM>();
@@ -302,11 +339,24 @@ namespace Final_Project.Controllers
 
                 filteredOrdersViewModel.Add(ordersViewModelItem);
             }
+            const int pageSize = 9;
+            if (pg < 1)
+                pg = 1;
+            int recsCount = filteredOrdersViewModel.Count();
+            var pager = new Pager(recsCount, pg, pageSize);
+            int recSkip = (pg - 1) * pageSize;
+            var data = filteredOrdersViewModel.Skip(recSkip).Take(pager.PageSize).ToList();
+            pager.Controller = "Order";
+            pager.Action = "Index";
+            this.ViewBag.pager = pager;
+
+          
 
 
-
-            return Json(filteredOrdersViewModel);
+            return Json(data);
         }
+
+
 
 
         [Authorize(Permissions.Orders.Create)]
@@ -327,6 +377,10 @@ namespace Final_Project.Controllers
             return Ok(pro.Id);
         }
 
+
+
+
+
         [Authorize(Permissions.Orders.Delete)]
 
         public IActionResult DeleteProduct(int id)
@@ -339,6 +393,9 @@ namespace Final_Project.Controllers
             _productRepository.Delete(id);
             return Ok();
         }
+
+
+
 
         public decimal? ProductsWeight(string orderNO)
         {
@@ -394,29 +451,37 @@ namespace Final_Project.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Status(Order order)
         {
-            //GetAll=>GetOrders
+           
             ViewData["OrderStatus"] = _orderStateRepository.GetOrders();
             Order orderFromDB = _orderRepository.GetById(order.Id);
+
             orderFromDB.OrderStateId = order.OrderStateId;
             _orderRepository.Save();
 
             return RedirectToAction("Index");
         }
+
+
+
+
         [Authorize(Permissions.Orders.View)]
 
         public IActionResult LinkOrderToRepresentative(string orderId, string repId)
         {
             var order = _orderRepository.GetById(int.Parse(orderId));
 
-            order.RepresentativeId = repId;
+            order.RepresentativeId = repId;          
 
             _orderRepository.Save();
 
             return RedirectToAction("Index", "Order");
         }
-        [Authorize(Permissions.OrderReports.View)]
 
-        public IActionResult OrderReport(string startDate, string endDate, int statusId)
+
+
+
+        [Authorize(Permissions.OrderReports.View)]
+        public IActionResult OrderReport(string startDate, string endDate, int statusId , int pg=1)
         {
             List<OrderReporttWithOrderByStatusDateVM> ordersViewModel = new List<OrderReporttWithOrderByStatusDateVM>();
 
@@ -458,7 +523,19 @@ namespace Final_Project.Controllers
 
             ViewBag.status = _orderStateRepository.GetOrders();
 
-            return View(ordersViewModel);
+            ViewData["OrderStates"] = _orderStateRepository.GetOrders();
+            const int pageSize = 9;
+            if (pg < 1)
+                pg = 1;
+            int recsCount = ordersViewModel.Count();
+            var pager = new Pager(recsCount, pg, pageSize);
+            int recSkip = (pg - 1) * pageSize;
+            var data = ordersViewModel.Skip(recSkip).Take(pager.PageSize).ToList();
+            pager.Controller = "Order";
+            pager.Action = "OrderReport";
+            this.ViewBag.pager = pager;
+
+            return View(data);
         }
     }
 }

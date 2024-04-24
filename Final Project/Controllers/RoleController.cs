@@ -41,7 +41,7 @@ namespace Final_Project.Controllers
                     roles.Remove(superAdminRole);
                     roles.Insert(0, superAdminRole);
                 }
-                const int pageSize = 5;
+                const int pageSize = 9;
                 if (pg < 1)
                     pg = 1;
                 int recsCount = roles.Count();

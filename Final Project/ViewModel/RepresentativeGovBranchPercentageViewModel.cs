@@ -22,7 +22,7 @@ namespace Final_Project.ViewModel
 
         [DataType(DataType.Password)]
         //[Required(ErrorMessage ="Password Is Required")]
-        [RegularExpression(@"^.{5,}$", ErrorMessage = "Password must be at least 5 characters long.")]
+        [RegularExpression(@"^.{5,20}$", ErrorMessage = "Password must be at least 5 characters long.")]
         public string? Password { get; set; }
 
 

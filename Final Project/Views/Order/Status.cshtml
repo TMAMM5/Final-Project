@@ -32,7 +32,7 @@
     <div class="form-group">
         <label asp-for="OrderStateId" class="control-label"></label>
         <select id="order-status" onchange="ShowAllRepresentative(@Model.Id)" asp-for="OrderStateId" asp-items="orderstatus" class="form-control">
-            <option value="0" class="bg-secondary" disabled>New</option>
+            <option value="" class="bg-secondary" disabled>New</option>
         </select>
         <span asp-validation-for="OrderStateId" class="text-danger"></span>
 
