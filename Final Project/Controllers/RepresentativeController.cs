@@ -262,7 +262,7 @@ namespace Final_Project.Controllers
             {
                 return NotFound();
             }
-            List<OrderState> orderStates = _orderStateRepository.GetOrders();
+            List<OrderState> orderStates = _orderStateRepository.GetOrdersForRep();
             OrderWithOrderStateVM orderWithOrderStateVM = new OrderWithOrderStateVM
             {
                 OrderID = order.Id,

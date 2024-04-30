@@ -13,6 +13,10 @@ namespace Final_Project.Repository.OrderStateRepo
         {
             return context.OrderStates.ToList();
         }
+        public List<OrderState> GetOrdersForRep()
+        {
+            return context.OrderStates.Where(s => s.Id >= 4).ToList();
+        }
 
         public List<OrderState> GetForEmp()
         {
