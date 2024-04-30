@@ -40,7 +40,7 @@ namespace Final_Project.Controllers
                         {
                             return RedirectToAction("Home", "Trader"); 
                         }
-                        else if (await _userManager.IsInRoleAsync(user,"Representative"))
+                        else if (await _userManager.IsInRoleAsync(user, "Representative"))
                         {
                             return RedirectToAction("Home", "Representative");
                         }

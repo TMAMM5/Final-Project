@@ -60,7 +60,6 @@ namespace Final_Project.Controllers
         }
 
         [Authorize(Permissions.Representatives.View)]
-
         public IActionResult Home()
         {
             var username = User.Identity.Name;
@@ -74,7 +73,6 @@ namespace Final_Project.Controllers
 
 
         [Authorize(Permissions.Users.Create)]
-
         [HttpGet]
         public async Task<IActionResult> Create()
         {

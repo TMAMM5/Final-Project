@@ -130,7 +130,11 @@
                 <form asp-action="Index">
                     <div class="input-group">
                         <input name="childname" class="form-control search-input" type="text" placeholder="Search" aria-label="Search" />
-                        <button class="btn btn-primary search-button" type="submit" id="button-addon2">Search</button>
+                        <button class="btn btn-primary search-button" type="submit" id="button-addon2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
+                            </svg>
+                        </button>
                     </div>
                 </form>
             </div>
@@ -155,7 +159,7 @@
                     {
                         <tr id="row_@role.Id">
                             <th scope="row">@(index++)</th>
-                            <td id="name_@role.Id"><strong>@role.Name</strong></td>
+                            <td id="name_@role.Id">@role.Name</td>
                             <td>
                                 @if (@role.Name != "SuperAdmin")
                                 {
