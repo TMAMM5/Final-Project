@@ -7,5 +7,6 @@ namespace Final_Project.Repository.OrderStateRepo
         OrderState getById(int id);
         List<OrderState> GetForEmp();
         List<OrderState> GetOrders();
+        List<OrderState> GetOrdersForRep();
     }
 }
