@@ -4,6 +4,72 @@
     ViewData["title"] = "Manage Roles";
 }
 <style>
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+
+
+        .table thead th {
+            background-color: #f8f9fa;
+            color: #212529;
+            font-weight: bold;
+        }
+
+        .table tbody tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+
+        .table td, .table th {
+            padding: 12px 15px;
+            border: 1px solid #dee2e6;
+        }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        color: #fff;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 5px;
+        text-decoration: none;
+    }
+
+        .btn-secondary:hover {
+            background-color: #495057;
+        }
+
+
+    .shadow {
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+
+
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+
+    .form-check-input[type="checkbox"] {
+        width: 40px;
+        height: 20px;
+        margin: 0;
+        cursor: pointer;
+    }
+
+        .form-check-input[type="checkbox"]:checked + .form-check-label::before {
+            background-color: #007bff;
+        }
+
+        .form-check-input[type="checkbox"]:checked + .form-check-label::after {
+            left: 20px;
+        }
+
+
+
     .check input[type="checkbox"] {
         appearance: none;
         -webkit-appearance: none;
@@ -63,7 +129,7 @@
                             @for (int i = 0; i < Model.MyRoles.Count; i += 4)
                             {
                                 <tr>
-                                    <td class="fs-3" scope="row">@Model.MyRoles[i].Value.Split('.')[1]</td>
+                                    <td  scope="row">@Model.MyRoles[i].Value.Split('.')[1]</td>
                                     <td>
                                         <div class="form-check m-1">
                                             <input type="hidden" asp-for="@Model.MyRoles[i].Value" />
@@ -104,6 +170,7 @@
         </div>
 
         <div asp-validation-summary="All" class="text-danger"></div>
+    </div>
     </div>
     <div class="card-footer">
         <button type="submit" class="btn btn-primary">Save</button>
